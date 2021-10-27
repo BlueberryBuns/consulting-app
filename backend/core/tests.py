@@ -31,4 +31,4 @@ class AuthTest(APITestCase):
         self.assertEqual(response.get("last_name"), user.last_name)
         self.assertEqual(response.get("username"), None)
 
-    def test_user_login(self):
+    def test_user_login(self): ...
