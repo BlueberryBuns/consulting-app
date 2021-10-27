@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'channels',
     'chat',
+    'core',
     'rest_framework',
     
     'django.contrib.admin',
@@ -104,7 +105,7 @@ CHANNEL_LAYERS = {
     }
 }
 
-AUTH_USER_MODEL = 'chat.User'
+AUTH_USER_MODEL = 'core.User'
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
