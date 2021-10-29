@@ -1,6 +1,5 @@
 import { initStore } from "./store";
 import mediaActions from "../media-utils/media-actions";
-
 const configureStore = () => {
   const actions = {
     SWITCH_CAMERA_STATUS: mediaActions.switchCameraStatus,
