@@ -32,8 +32,10 @@ const updateMediastream = (currentState, newStream) => {
   return newMediaState;
 };
 
-export default {
+const media_object = {
   switchCameraStatus,
   switchAudioStatus,
   updateMediastream,
 };
+
+export default media_object;

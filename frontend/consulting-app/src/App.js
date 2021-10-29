@@ -1,7 +1,13 @@
 import "./App.css";
+import CameraPlayer from "./components/CameraPlayer/CameraPlayer";
 
-function App() {
-  return <div className="App"></div>;
-}
+const App = () => {
+  return (
+    <>
+      <h1>XD</h1>
+      <CameraPlayer />
+    </>
+  );
+};
 
 export default App;
