@@ -28,7 +28,7 @@ const MenuAppBar = () => {
           <IconButton
             size="medium"
             edge="start"
-            color="inherit"
+            color=""
             aria-label="menu"
             sx={{ mr: 2 }}
           >
