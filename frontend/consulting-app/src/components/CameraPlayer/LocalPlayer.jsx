@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useStore } from "../../custom-store/store";
+import { useStore } from "../../stores/custom-store/store";
 import initialCameraSetup from "../../media-utils/base-config";
 import { mediaMapping } from "../../media-utils/mappings";
 import CameraPlayer from "./CameraPlayer";

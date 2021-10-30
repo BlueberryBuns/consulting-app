@@ -3,13 +3,11 @@ import LocalPlayer from "./components/CameraPlayer/LocalPlayer";
 import RemotePlayer from "./components/CameraPlayer/RemotePlayer";
 import NavBar from "./components/NavigationBar/NavBar";
 import Box from "@mui/material/Box";
-import { StyledEngineProvider } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
 
 const App = () => {
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <LocalPlayer />
       <RemotePlayer />
       <Box
