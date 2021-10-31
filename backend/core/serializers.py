@@ -75,9 +75,7 @@ class LoginSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         user_data = UserSerializer(user).data
-
         for k, v in user_data.items():
             if k != "id":
                 token[k] = v
-
         return token
