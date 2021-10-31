@@ -33,3 +33,6 @@ class LoginAPIView(TokenObtainPairView):
         return res
     # print(queryset)
     serializer_class = LoginSerializer
+
+class ReedeemRefreshTokenView():
+    ...
