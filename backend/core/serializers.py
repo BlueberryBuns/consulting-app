@@ -1,13 +1,16 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth import get_user_model
 
-from core.models import User
+__all__ = ("UserSerializer", "LoginSerializer")
 
 
 class UserSerializer(ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(
+        write_only=True,
+    )
     password_confirmation = serializers.CharField(write_only=True)
 
     class Meta:
@@ -33,16 +36,19 @@ class UserSerializer(ModelSerializer):
         password = validated_data.pop("password")
 
         user_data = {
-            key: val for key, val in validated_data.items()
-            if key not in ["password_confirmation",] 
+            key: val
+            for key, val in validated_data.items()
+            if key
+            not in [
+                "password_confirmation",
+            ]
         }
 
         instance = self.Meta.model(**user_data)
 
         if password is not None:
             instance.set_password(password)
-        
-        print(instance)
+
         instance.save()
         return instance
 
@@ -53,12 +59,23 @@ class UserSerializer(ModelSerializer):
         if _password is None:
             raise ValidationError("Password cannot be empty")
 
-        if _password_conf is None:
+        elif _password_conf is None:
             raise ValidationError("Password confirmation cannot be empty")
 
-        if _password_conf != _password:
+        elif _password_conf != _password:
             raise ValidationError("Passwords must match!")
 
-        del _password_conf 
+        del _password_conf
         del _password
         return attrs
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        user_data = UserSerializer(user).data
+        for k, v in user_data.items():
+            if k != "id":
+                token[k] = v
+        return token

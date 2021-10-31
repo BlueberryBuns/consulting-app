@@ -7,8 +7,8 @@ from backend.core.models import User
 
 PASSWD = "aabbcc123!"
 
-class AuthTest(APITestCase):
 
+class AuthTest(APITestCase):
     def test_user_sign_up(self):
 
         response = self.client.post(
@@ -31,4 +31,5 @@ class AuthTest(APITestCase):
         self.assertEqual(response.get("last_name"), user.last_name)
         self.assertEqual(response.get("username"), None)
 
-    def test_user_login(self): ...
+    def test_user_login(self):
+        ...
