@@ -1,9 +1,45 @@
 import { useRef, useState } from "react";
 import authAxios from "../../Auth/auth-axios";
+import { useSelector, useDispatch } from "react-redux";
+import { accountActions } from "../../stores/redux-store/slices/auth-slice";
+import { Redirect } from "react-router";
+
+const loginHandler = async (email, password) => {
+  console.log("Sent user login data");
+  const res = await authAxios.post("/users/login", {
+    email: email,
+    password: password,
+  });
+  return res;
+};
+
+const registerHandler = async (
+  email,
+  password,
+  confirmPassword,
+  firstName,
+  middleName,
+  lastName
+) => {
+  console.log("Sent register data");
+  const response = await authAxios.post("/users/register", {
+    email: email,
+    password: password,
+    password_confirmation: confirmPassword,
+    first_name: firstName,
+    middle_names: middleName,
+    last_name: lastName,
+  });
+  console.log(response);
+
+  return response;
+};
 
 const AccountPage = (props) => {
+  const dispatch = useDispatch();
   // Starts with login
   const [accountToggle, setAccountToggle] = useState(false);
+  const authState = useSelector((store) => store.account);
 
   // Login / SignUp
   const emailRef = useRef();
@@ -26,12 +62,10 @@ const AccountPage = (props) => {
 
     if (!accountToggle) {
       try {
-        console.log("login");
-        const response = await authAxios.post("/users/login", {
-          email: email,
-          password: passwd,
-        });
-        console.log(response);
+        const response = await loginHandler(email, passwd);
+        if (response.statusText === "OK") {
+          dispatch(accountActions.updateTokens(response.data));
+        }
       } catch (error) {
         console.log(error);
       }
@@ -42,16 +76,23 @@ const AccountPage = (props) => {
       const lastName = lastNameRef.current.value;
 
       try {
-        console.log("register");
-        const response = await authAxios.post("/users/register", {
-          email: email,
-          password: passwd,
-          password_confirmation: passwdConf,
-          first_name: firstName,
-          middle_names: middleName,
-          last_name: lastName,
-        });
-        console.log(response);
+        const registerResponse = await registerHandler(
+          email,
+          passwd,
+          passwdConf,
+          firstName,
+          middleName,
+          lastName
+        );
+        if (registerResponse.status === 201) {
+          console.log("Tried logging in after register");
+          const loginAfterRegisterResponse = await loginHandler(email, passwd);
+          dispatch(
+            accountActions.updateTokens(loginAfterRegisterResponse.data)
+          );
+          console.log(loginAfterRegisterResponse);
+        }
+        // console.log(registerResponse);
       } catch (error) {
         console.log(error);
       }
@@ -60,6 +101,8 @@ const AccountPage = (props) => {
 
   return (
     <>
+      {authState.isAuthenticated && <Redirect to="/" />}
+      {console.log(authState)}
       <form onSubmit={submitLoginHander}>
         <div>
           <label htmlFor="email">Your email</label>
