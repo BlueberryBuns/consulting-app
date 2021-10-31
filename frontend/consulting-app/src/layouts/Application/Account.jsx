@@ -84,7 +84,7 @@ const AccountPage = (props) => {
           middleName,
           lastName
         );
-        if ((await registerResponse.status) === 201) {
+        if (registerResponse.status === 201) {
           console.log("Tried logging in after register");
           const loginAfterRegisterResponse = await loginHandler(email, passwd);
           dispatch(
