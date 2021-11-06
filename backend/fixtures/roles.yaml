@@ -1,0 +1,20 @@
+- model: core.Roles
+  pk: 1
+  fields:
+    name: USER
+- model: core.Roles
+  pk: 2
+  fields:
+    name: PATIENT
+- model: core.Roles
+  pk: 3
+  fields:
+    name: DOCTOR
+- model: core.Roles
+  pk: 4
+  fields:
+    name: MODERATOR
+- model: core.Roles
+  pk: 5
+  fields:
+    name: ADMIN

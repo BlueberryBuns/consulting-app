@@ -1,0 +1,904 @@
+- model: core.Nationalities
+  pk: 1
+  fields:
+    nationality: Nationality
+- model: core.Nationalities
+  pk: 2
+  fields:
+    nationality: Afghan
+- model: core.Nationalities
+  pk: 3
+  fields:
+    nationality: Albanian
+- model: core.Nationalities
+  pk: 4
+  fields:
+    nationality: Algerian
+- model: core.Nationalities
+  pk: 5
+  fields:
+    nationality: American
+- model: core.Nationalities
+  pk: 6
+  fields:
+    nationality: Andorran
+- model: core.Nationalities
+  pk: 7
+  fields:
+    nationality: Angolan
+- model: core.Nationalities
+  pk: 8
+  fields:
+    nationality: Anguillan
+- model: core.Nationalities
+  pk: 9
+  fields:
+    nationality: Argentine
+- model: core.Nationalities
+  pk: 10
+  fields:
+    nationality: Armenian
+- model: core.Nationalities
+  pk: 11
+  fields:
+    nationality: Australian
+- model: core.Nationalities
+  pk: 12
+  fields:
+    nationality: Austrian
+- model: core.Nationalities
+  pk: 13
+  fields:
+    nationality: Azerbaijani
+- model: core.Nationalities
+  pk: 14
+  fields:
+    nationality: Bahamian
+- model: core.Nationalities
+  pk: 15
+  fields:
+    nationality: Bahraini
+- model: core.Nationalities
+  pk: 16
+  fields:
+    nationality: Bangladeshi
+- model: core.Nationalities
+  pk: 17
+  fields:
+    nationality: Barbadian
+- model: core.Nationalities
+  pk: 18
+  fields:
+    nationality: Belarusian
+- model: core.Nationalities
+  pk: 19
+  fields:
+    nationality: Belgian
+- model: core.Nationalities
+  pk: 20
+  fields:
+    nationality: Belizean
+- model: core.Nationalities
+  pk: 21
+  fields:
+    nationality: Beninese
+- model: core.Nationalities
+  pk: 22
+  fields:
+    nationality: Bermudian
+- model: core.Nationalities
+  pk: 23
+  fields:
+    nationality: Bhutanese
+- model: core.Nationalities
+  pk: 24
+  fields:
+    nationality: Bolivian
+- model: core.Nationalities
+  pk: 25
+  fields:
+    nationality: Botswanan
+- model: core.Nationalities
+  pk: 26
+  fields:
+    nationality: Brazilian
+- model: core.Nationalities
+  pk: 27
+  fields:
+    nationality: British
+- model: core.Nationalities
+  pk: 28
+  fields:
+    nationality: British Virgin Islander
+- model: core.Nationalities
+  pk: 29
+  fields:
+    nationality: Bruneian
+- model: core.Nationalities
+  pk: 30
+  fields:
+    nationality: Bulgarian
+- model: core.Nationalities
+  pk: 31
+  fields:
+    nationality: Burkinan
+- model: core.Nationalities
+  pk: 32
+  fields:
+    nationality: Burmese
+- model: core.Nationalities
+  pk: 33
+  fields:
+    nationality: Burundian
+- model: core.Nationalities
+  pk: 34
+  fields:
+    nationality: Cambodian
+- model: core.Nationalities
+  pk: 35
+  fields:
+    nationality: Cameroonian
+- model: core.Nationalities
+  pk: 36
+  fields:
+    nationality: Canadian
+- model: core.Nationalities
+  pk: 37
+  fields:
+    nationality: Cape Verdean
+- model: core.Nationalities
+  pk: 38
+  fields:
+    nationality: Cayman Islander
+- model: core.Nationalities
+  pk: 39
+  fields:
+    nationality: Central African
+- model: core.Nationalities
+  pk: 40
+  fields:
+    nationality: Chadian
+- model: core.Nationalities
+  pk: 41
+  fields:
+    nationality: Chilean
+- model: core.Nationalities
+  pk: 42
+  fields:
+    nationality: Chinese
+- model: core.Nationalities
+  pk: 43
+  fields:
+    nationality: Citizen of Antigua and Barbuda
+- model: core.Nationalities
+  pk: 44
+  fields:
+    nationality: Citizen of Bosnia and Herzegovina
+- model: core.Nationalities
+  pk: 45
+  fields:
+    nationality: Citizen of Guinea-Bissau
+- model: core.Nationalities
+  pk: 46
+  fields:
+    nationality: Citizen of Kiribati
+- model: core.Nationalities
+  pk: 47
+  fields:
+    nationality: Citizen of Seychelles
+- model: core.Nationalities
+  pk: 48
+  fields:
+    nationality: Citizen of the Dominican Republic
+- model: core.Nationalities
+  pk: 49
+  fields:
+    nationality: Citizen of Vanuatu
+- model: core.Nationalities
+  pk: 50
+  fields:
+    nationality: Colombian
+- model: core.Nationalities
+  pk: 51
+  fields:
+    nationality: Comoran
+- model: core.Nationalities
+  pk: 52
+  fields:
+    nationality: Congolese (Congo)
+- model: core.Nationalities
+  pk: 53
+  fields:
+    nationality: Congolese (DRC)
+- model: core.Nationalities
+  pk: 54
+  fields:
+    nationality: Cook Islander
+- model: core.Nationalities
+  pk: 55
+  fields:
+    nationality: Costa Rican
+- model: core.Nationalities
+  pk: 56
+  fields:
+    nationality: Croatian
+- model: core.Nationalities
+  pk: 57
+  fields:
+    nationality: Cuban
+- model: core.Nationalities
+  pk: 58
+  fields:
+    nationality: Cymraes
+- model: core.Nationalities
+  pk: 59
+  fields:
+    nationality: Cymro
+- model: core.Nationalities
+  pk: 60
+  fields:
+    nationality: Cypriot
+- model: core.Nationalities
+  pk: 61
+  fields:
+    nationality: Czech
+- model: core.Nationalities
+  pk: 62
+  fields:
+    nationality: Danish
+- model: core.Nationalities
+  pk: 63
+  fields:
+    nationality: Djiboutian
+- model: core.Nationalities
+  pk: 64
+  fields:
+    nationality: Dominican
+- model: core.Nationalities
+  pk: 65
+  fields:
+    nationality: Dutch
+- model: core.Nationalities
+  pk: 66
+  fields:
+    nationality: East Timorese
+- model: core.Nationalities
+  pk: 67
+  fields:
+    nationality: Ecuadorean
+- model: core.Nationalities
+  pk: 68
+  fields:
+    nationality: Egyptian
+- model: core.Nationalities
+  pk: 69
+  fields:
+    nationality: Emirati
+- model: core.Nationalities
+  pk: 70
+  fields:
+    nationality: English
+- model: core.Nationalities
+  pk: 71
+  fields:
+    nationality: Equatorial Guinean
+- model: core.Nationalities
+  pk: 72
+  fields:
+    nationality: Eritrean
+- model: core.Nationalities
+  pk: 73
+  fields:
+    nationality: Estonian
+- model: core.Nationalities
+  pk: 74
+  fields:
+    nationality: Ethiopian
+- model: core.Nationalities
+  pk: 75
+  fields:
+    nationality: Faroese
+- model: core.Nationalities
+  pk: 76
+  fields:
+    nationality: Fijian
+- model: core.Nationalities
+  pk: 77
+  fields:
+    nationality: Filipino
+- model: core.Nationalities
+  pk: 78
+  fields:
+    nationality: Finnish
+- model: core.Nationalities
+  pk: 79
+  fields:
+    nationality: French
+- model: core.Nationalities
+  pk: 80
+  fields:
+    nationality: Gabonese
+- model: core.Nationalities
+  pk: 81
+  fields:
+    nationality: Gambian
+- model: core.Nationalities
+  pk: 82
+  fields:
+    nationality: Georgian
+- model: core.Nationalities
+  pk: 83
+  fields:
+    nationality: German
+- model: core.Nationalities
+  pk: 84
+  fields:
+    nationality: Ghanaian
+- model: core.Nationalities
+  pk: 85
+  fields:
+    nationality: Gibraltarian
+- model: core.Nationalities
+  pk: 86
+  fields:
+    nationality: Greek
+- model: core.Nationalities
+  pk: 87
+  fields:
+    nationality: Greenlandic
+- model: core.Nationalities
+  pk: 88
+  fields:
+    nationality: Grenadian
+- model: core.Nationalities
+  pk: 89
+  fields:
+    nationality: Guamanian
+- model: core.Nationalities
+  pk: 90
+  fields:
+    nationality: Guatemalan
+- model: core.Nationalities
+  pk: 91
+  fields:
+    nationality: Guinean
+- model: core.Nationalities
+  pk: 92
+  fields:
+    nationality: Guyanese
+- model: core.Nationalities
+  pk: 93
+  fields:
+    nationality: Haitian
+- model: core.Nationalities
+  pk: 94
+  fields:
+    nationality: Honduran
+- model: core.Nationalities
+  pk: 95
+  fields:
+    nationality: Hong Konger
+- model: core.Nationalities
+  pk: 96
+  fields:
+    nationality: Hungarian
+- model: core.Nationalities
+  pk: 97
+  fields:
+    nationality: Icelandic
+- model: core.Nationalities
+  pk: 98
+  fields:
+    nationality: Indian
+- model: core.Nationalities
+  pk: 99
+  fields:
+    nationality: Indonesian
+- model: core.Nationalities
+  pk: 100
+  fields:
+    nationality: Iranian
+- model: core.Nationalities
+  pk: 101
+  fields:
+    nationality: Iraqi
+- model: core.Nationalities
+  pk: 102
+  fields:
+    nationality: Irish
+- model: core.Nationalities
+  pk: 103
+  fields:
+    nationality: Israeli
+- model: core.Nationalities
+  pk: 104
+  fields:
+    nationality: Italian
+- model: core.Nationalities
+  pk: 105
+  fields:
+    nationality: Ivorian
+- model: core.Nationalities
+  pk: 106
+  fields:
+    nationality: Jamaican
+- model: core.Nationalities
+  pk: 107
+  fields:
+    nationality: Japanese
+- model: core.Nationalities
+  pk: 108
+  fields:
+    nationality: Jordanian
+- model: core.Nationalities
+  pk: 109
+  fields:
+    nationality: Kazakh
+- model: core.Nationalities
+  pk: 110
+  fields:
+    nationality: Kenyan
+- model: core.Nationalities
+  pk: 111
+  fields:
+    nationality: Kittitian
+- model: core.Nationalities
+  pk: 112
+  fields:
+    nationality: Kosovan
+- model: core.Nationalities
+  pk: 113
+  fields:
+    nationality: Kuwaiti
+- model: core.Nationalities
+  pk: 114
+  fields:
+    nationality: Kyrgyz
+- model: core.Nationalities
+  pk: 115
+  fields:
+    nationality: Lao
+- model: core.Nationalities
+  pk: 116
+  fields:
+    nationality: Latvian
+- model: core.Nationalities
+  pk: 117
+  fields:
+    nationality: Lebanese
+- model: core.Nationalities
+  pk: 118
+  fields:
+    nationality: Liberian
+- model: core.Nationalities
+  pk: 119
+  fields:
+    nationality: Libyan
+- model: core.Nationalities
+  pk: 120
+  fields:
+    nationality: Liechtenstein citizen
+- model: core.Nationalities
+  pk: 121
+  fields:
+    nationality: Lithuanian
+- model: core.Nationalities
+  pk: 122
+  fields:
+    nationality: Luxembourger
+- model: core.Nationalities
+  pk: 123
+  fields:
+    nationality: Macanese
+- model: core.Nationalities
+  pk: 124
+  fields:
+    nationality: Macedonian
+- model: core.Nationalities
+  pk: 125
+  fields:
+    nationality: Malagasy
+- model: core.Nationalities
+  pk: 126
+  fields:
+    nationality: Malawian
+- model: core.Nationalities
+  pk: 127
+  fields:
+    nationality: Malaysian
+- model: core.Nationalities
+  pk: 128
+  fields:
+    nationality: Maldivian
+- model: core.Nationalities
+  pk: 129
+  fields:
+    nationality: Malian
+- model: core.Nationalities
+  pk: 130
+  fields:
+    nationality: Maltese
+- model: core.Nationalities
+  pk: 131
+  fields:
+    nationality: Marshallese
+- model: core.Nationalities
+  pk: 132
+  fields:
+    nationality: Martiniquais
+- model: core.Nationalities
+  pk: 133
+  fields:
+    nationality: Mauritanian
+- model: core.Nationalities
+  pk: 134
+  fields:
+    nationality: Mauritian
+- model: core.Nationalities
+  pk: 135
+  fields:
+    nationality: Mexican
+- model: core.Nationalities
+  pk: 136
+  fields:
+    nationality: Micronesian
+- model: core.Nationalities
+  pk: 137
+  fields:
+    nationality: Moldovan
+- model: core.Nationalities
+  pk: 138
+  fields:
+    nationality: Monegasque
+- model: core.Nationalities
+  pk: 139
+  fields:
+    nationality: Mongolian
+- model: core.Nationalities
+  pk: 140
+  fields:
+    nationality: Montenegrin
+- model: core.Nationalities
+  pk: 141
+  fields:
+    nationality: Montserratian
+- model: core.Nationalities
+  pk: 142
+  fields:
+    nationality: Moroccan
+- model: core.Nationalities
+  pk: 143
+  fields:
+    nationality: Mosotho
+- model: core.Nationalities
+  pk: 144
+  fields:
+    nationality: Mozambican
+- model: core.Nationalities
+  pk: 145
+  fields:
+    nationality: Namibian
+- model: core.Nationalities
+  pk: 146
+  fields:
+    nationality: Nauruan
+- model: core.Nationalities
+  pk: 147
+  fields:
+    nationality: Nepalese
+- model: core.Nationalities
+  pk: 148
+  fields:
+    nationality: New Zealander
+- model: core.Nationalities
+  pk: 149
+  fields:
+    nationality: Nicaraguan
+- model: core.Nationalities
+  pk: 150
+  fields:
+    nationality: Nigerian
+- model: core.Nationalities
+  pk: 151
+  fields:
+    nationality: Nigerien
+- model: core.Nationalities
+  pk: 152
+  fields:
+    nationality: Niuean
+- model: core.Nationalities
+  pk: 153
+  fields:
+    nationality: North Korean
+- model: core.Nationalities
+  pk: 154
+  fields:
+    nationality: Northern Irish
+- model: core.Nationalities
+  pk: 155
+  fields:
+    nationality: Norwegian
+- model: core.Nationalities
+  pk: 156
+  fields:
+    nationality: Omani
+- model: core.Nationalities
+  pk: 157
+  fields:
+    nationality: Pakistani
+- model: core.Nationalities
+  pk: 158
+  fields:
+    nationality: Palauan
+- model: core.Nationalities
+  pk: 159
+  fields:
+    nationality: Palestinian
+- model: core.Nationalities
+  pk: 160
+  fields:
+    nationality: Panamanian
+- model: core.Nationalities
+  pk: 161
+  fields:
+    nationality: Papua New Guinean
+- model: core.Nationalities
+  pk: 162
+  fields:
+    nationality: Paraguayan
+- model: core.Nationalities
+  pk: 163
+  fields:
+    nationality: Peruvian
+- model: core.Nationalities
+  pk: 164
+  fields:
+    nationality: Pitcairn Islander
+- model: core.Nationalities
+  pk: 165
+  fields:
+    nationality: Polish
+- model: core.Nationalities
+  pk: 166
+  fields:
+    nationality: Portuguese
+- model: core.Nationalities
+  pk: 167
+  fields:
+    nationality: Prydeinig
+- model: core.Nationalities
+  pk: 168
+  fields:
+    nationality: Puerto Rican
+- model: core.Nationalities
+  pk: 169
+  fields:
+    nationality: Qatari
+- model: core.Nationalities
+  pk: 170
+  fields:
+    nationality: Romanian
+- model: core.Nationalities
+  pk: 171
+  fields:
+    nationality: Russian
+- model: core.Nationalities
+  pk: 172
+  fields:
+    nationality: Rwandan
+- model: core.Nationalities
+  pk: 173
+  fields:
+    nationality: Salvadorean
+- model: core.Nationalities
+  pk: 174
+  fields:
+    nationality: Sammarinese
+- model: core.Nationalities
+  pk: 175
+  fields:
+    nationality: Samoan
+- model: core.Nationalities
+  pk: 176
+  fields:
+    nationality: Sao Tomean
+- model: core.Nationalities
+  pk: 177
+  fields:
+    nationality: Saudi Arabian
+- model: core.Nationalities
+  pk: 178
+  fields:
+    nationality: Scottish
+- model: core.Nationalities
+  pk: 179
+  fields:
+    nationality: Senegalese
+- model: core.Nationalities
+  pk: 180
+  fields:
+    nationality: Serbian
+- model: core.Nationalities
+  pk: 181
+  fields:
+    nationality: Sierra Leonean
+- model: core.Nationalities
+  pk: 182
+  fields:
+    nationality: Singaporean
+- model: core.Nationalities
+  pk: 183
+  fields:
+    nationality: Slovak
+- model: core.Nationalities
+  pk: 184
+  fields:
+    nationality: Slovenian
+- model: core.Nationalities
+  pk: 185
+  fields:
+    nationality: Solomon Islander
+- model: core.Nationalities
+  pk: 186
+  fields:
+    nationality: Somali
+- model: core.Nationalities
+  pk: 187
+  fields:
+    nationality: South African
+- model: core.Nationalities
+  pk: 188
+  fields:
+    nationality: South Korean
+- model: core.Nationalities
+  pk: 189
+  fields:
+    nationality: South Sudanese
+- model: core.Nationalities
+  pk: 190
+  fields:
+    nationality: Spanish
+- model: core.Nationalities
+  pk: 191
+  fields:
+    nationality: Sri Lankan
+- model: core.Nationalities
+  pk: 192
+  fields:
+    nationality: St Helenian
+- model: core.Nationalities
+  pk: 193
+  fields:
+    nationality: St Lucian
+- model: core.Nationalities
+  pk: 194
+  fields:
+    nationality: Stateless
+- model: core.Nationalities
+  pk: 195
+  fields:
+    nationality: Sudanese
+- model: core.Nationalities
+  pk: 196
+  fields:
+    nationality: Surinamese
+- model: core.Nationalities
+  pk: 197
+  fields:
+    nationality: Swazi
+- model: core.Nationalities
+  pk: 198
+  fields:
+    nationality: Swedish
+- model: core.Nationalities
+  pk: 199
+  fields:
+    nationality: Swiss
+- model: core.Nationalities
+  pk: 200
+  fields:
+    nationality: Syrian
+- model: core.Nationalities
+  pk: 201
+  fields:
+    nationality: Taiwanese
+- model: core.Nationalities
+  pk: 202
+  fields:
+    nationality: Tajik
+- model: core.Nationalities
+  pk: 203
+  fields:
+    nationality: Tanzanian
+- model: core.Nationalities
+  pk: 204
+  fields:
+    nationality: Thai
+- model: core.Nationalities
+  pk: 205
+  fields:
+    nationality: Togolese
+- model: core.Nationalities
+  pk: 206
+  fields:
+    nationality: Tongan
+- model: core.Nationalities
+  pk: 207
+  fields:
+    nationality: Trinidadian
+- model: core.Nationalities
+  pk: 208
+  fields:
+    nationality: Tristanian
+- model: core.Nationalities
+  pk: 209
+  fields:
+    nationality: Tunisian
+- model: core.Nationalities
+  pk: 210
+  fields:
+    nationality: Turkish
+- model: core.Nationalities
+  pk: 211
+  fields:
+    nationality: Turkmen
+- model: core.Nationalities
+  pk: 212
+  fields:
+    nationality: Turks and Caicos Islander
+- model: core.Nationalities
+  pk: 213
+  fields:
+    nationality: Tuvaluan
+- model: core.Nationalities
+  pk: 214
+  fields:
+    nationality: Ugandan
+- model: core.Nationalities
+  pk: 215
+  fields:
+    nationality: Ukrainian
+- model: core.Nationalities
+  pk: 216
+  fields:
+    nationality: Uruguayan
+- model: core.Nationalities
+  pk: 217
+  fields:
+    nationality: Uzbek
+- model: core.Nationalities
+  pk: 218
+  fields:
+    nationality: Vatican citizen
+- model: core.Nationalities
+  pk: 219
+  fields:
+    nationality: Venezuelan
+- model: core.Nationalities
+  pk: 220
+  fields:
+    nationality: Vietnamese
+- model: core.Nationalities
+  pk: 221
+  fields:
+    nationality: Vincentian
+- model: core.Nationalities
+  pk: 222
+  fields:
+    nationality: Wallisian
+- model: core.Nationalities
+  pk: 223
+  fields:
+    nationality: Welsh
+- model: core.Nationalities
+  pk: 224
+  fields:
+    nationality: Yemeni
+- model: core.Nationalities
+  pk: 225
+  fields:
+    nationality: Zambian
+- model: core.Nationalities
+  pk: 226
+  fields:
+    nationality: Zimbabwean
