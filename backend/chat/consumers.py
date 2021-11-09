@@ -1,6 +1,8 @@
 import json
+from collections import defaultdict
 from asgiref.sync import async_to_sync
-
+import time
+import asyncio
 from channels.generic.websocket import AsyncJsonWebsocketConsumer, AsyncWebsocketConsumer
 
 __all__ = ["VideoRoomChatConsumer"]
@@ -22,7 +24,8 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
     6. Disconnect other user
     """
 
-    chat_groups = {}
+    chat_groups = dict()
+    initiator = False
 
     async def connect(self) -> None:
 
@@ -36,6 +39,8 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
             4. Check member if number hasnt exceeded max number of members
             5. Add group to channel layer
             6. Accept connection
+
+        Differentiate whether user creates or joins the room
         """
 
         self.user = self.scope.get("user")
@@ -47,12 +52,14 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
                 await self.close()
             else:
                 self.room_group_name = f"{self.visit_uuid}"
-                self.chat_groups.setdefault(self.room_group_name, set())
-                if self.user.email not in self.chat_groups[self.room_group_name] and \
-                    len(self.chat_groups[self.room_group_name]) >= 2:
-                    self.close()
+                self.chat_groups.setdefault(self.room_group_name, defaultdict(dict))
+                if self.user.email not in self.chat_groups[self.room_group_name]["users"] and \
+                    len(self.chat_groups[self.room_group_name]["users"]) >= 2:
+                    await self.close()
                 else:
-                    self.chat_groups[self.room_group_name].add(self.user.email)
+                    self.chat_groups[self.room_group_name]["users"][self.user.email] = f"{self.user.first_name} {self.user.last_name}"
+                    if len(self.chat_groups[self.room_group_name]["users"]) == 1:
+                        self.initiator = True
                     await self.channel_layer.group_add(
                         self.room_group_name,
                         self.channel_name
@@ -62,11 +69,20 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, code):
         await super().disconnect(code)
         if getattr(self, "visit_uuid", False):
+            if self.chat_groups[self.room_group_name]["users"].get(self.user.email) is not None:
+                self.chat_groups[self.room_group_name]["users"].pop(self.user.email)
+
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     "type": "bye",
-                    "message": f"User {self.user.first_name} {self.user.last_name} disconnected"
+                    "data": {
+                        "disconnected_user": {
+                            "email": self.user.email,
+                            "first_name": self.user.first_name,
+                            "last_name": self.user.last_name,
+                        }
+                    }
                 })
 
             await self.channel_layer.group_discard(
@@ -80,12 +96,20 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                "type": text_data_json["type"],
-                "full_name": " ".join((self.user.first_name, self.user.last_name)),
-                "message": text_data_json["message"]
+                "type": text_data_json.pop("type"),
+                "body": text_data_json
             }
         )
 
+    async def created_or_joined(self, event):
+        type = "created" if self.initiator else "joined"
+        await self.send(text_data=json.dumps(
+            {
+                "type": type,
+                "data": event["body"],
+            })
+        )
+        
     async def share_session_description_protocol(self, event):
         await self.send(text_data = json.dumps(
             {
@@ -96,15 +120,12 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
         )
     
     async def bye(self, event):
-        if self.user.email in self.chat_groups[self.room_group_name]:
-            self.chat_groups[self.room_group_name].remove(self.user.email)
         await self.send_json({
             "type": "bye",
-            "name": event["message"]
+            "data": event["data"]
         })
 
     async def hello(self, event):
-        print(self.chat_groups)
         await self.send_json(
             {
                 "type": "hello",
@@ -112,3 +133,11 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
                 "name": event["full_name"],
             }
         )
+    
+    async def created_room(self, event):
+        await self.send_json({
+            "type": "created",
+            "data":{
+                "message": "Room has been created",
+            }
+        })

@@ -34,14 +34,14 @@ const LocalPlayer = (props) => {
   ws.onopen = (event) => {
     // Joins or creates room
     console.log("Connection Opened");
-    const message = JSON.stringify({
-      type: "share.session.description.protocol",
-      message: "Example SDP",
+    const createdOrJoined = JSON.stringify({
+      type: "created.or.joined",
     });
-
-    console.log(event);
-    ws.send(message);
+    ws.send(createdOrJoined);
   };
+
+  //1636486277.5522206
+  //1636486277554
 
   ws.onclose = (event) => {
     console.log("Connection closed");
@@ -57,12 +57,12 @@ const LocalPlayer = (props) => {
     //add switch with event handling
     switch (JSON.parse(event.data).type) {
       case "received.sdp":
-        ws.send(
-          JSON.stringify({
-            type: "hello",
-            message: "world",
-          })
-        );
+        // ws.send(
+        //   JSON.stringify({
+        //     type: "hello",
+        //     message: "world",
+        //   })
+        // );
         break;
 
       case "hello":
@@ -73,8 +73,16 @@ const LocalPlayer = (props) => {
         console.log(event.data);
         break;
 
-      default:
+      case "created.room":
+        console.log(event.data);
         break;
+
+      case "created":
+        console.log(event.data);
+        break;
+
+      default:
+        console.log(event.data);
     }
     // console.log("Message received");
     // console.log(event);
