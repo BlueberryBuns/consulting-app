@@ -26,3 +26,7 @@ __pycache__/
 boilerplate.zip
 
 migrations
+
+/chat/middleware.py
+
+tests/

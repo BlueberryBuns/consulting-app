@@ -25,11 +25,11 @@ class LoginAPIView(TokenObtainPairView):
         queryset = User.objects.get(email=request.data.get("email"))
         res = super().post(request, *args, **kwargs)
 
-        username_str = " ".join([queryset.__dict__["first_name"],
-                queryset.__dict__["middle_names"],
-                queryset.__dict__["last_name"]])
+        # username_str = " ".join([queryset.__dict__["first_name"],
+        #         queryset.__dict__["middle_names"],
+        #         queryset.__dict__["last_name"]])
 
-        res.data["username"] = username_str
+        res.data["username"] = "XD"#username_str
         return res
     # print(queryset)
     serializer_class = LoginSerializer
