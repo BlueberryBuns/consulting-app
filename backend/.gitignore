@@ -30,3 +30,7 @@ migrations
 /chat/middleware.py
 
 tests/
+
+pytest.ini
+
+.pytest_cache
