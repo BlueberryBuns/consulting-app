@@ -101,7 +101,7 @@ const AccountPage = (props) => {
 
   return (
     <>
-      {authState.isAuthenticated && <Redirect to="/" />}
+      {authState.isAuthenticated && <Redirect to="/camera" />}
       {console.log(authState)}
       <form onSubmit={submitLoginHander}>
         <div>
