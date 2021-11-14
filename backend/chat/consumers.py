@@ -64,6 +64,7 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
                         self.room_group_name,
                         self.channel_name
                     )
+                    print(f"CHANNEL NAME: {self.channel_name}")
                     await self.accept()
 
     async def disconnect(self, code):
@@ -92,32 +93,60 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None, **kwargs):
         text_data_json = json.loads(text_data)
+        if text_data_json.pop("toGroup"):
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": text_data_json.pop("type"),
+                    "author": self.user.email,
+                    "body": text_data_json
+                }
+            )
+        else:
+            await self.channel_layer.send(
+                self.channel_name,
+                {
+                    "type": text_data_json.pop("type"),
+                    "author": self.user.email,
+                    "body": text_data_json
+                }
+            )
+            print("Personal message, interpreted as wanted")
 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                "type": text_data_json.pop("type"),
-                "body": text_data_json
-            }
-        )
+        
 
     async def created_or_joined(self, event):
-        type = "created" if self.initiator else "joined"
+        type = "create" if self.initiator else "join"
         await self.send(text_data=json.dumps(
             {
                 "type": type,
-                "data": event["body"],
             })
         )
-        
-    async def share_session_description_protocol(self, event):
-        await self.send(text_data = json.dumps(
-            {
-                "type": "received.sdp",
-                "sdp": event["message"],
-                "name": event["full_name"],
-            })
-        )
+
+    async def join_announced(self, event):
+        if event["author"] != self.user.email:
+            await self.send(text_data=json.dumps({
+                "type": event["type"],
+                "author": event["author"],
+                })
+            )
+
+
+    async def offer_sdp(self, event):
+        if event["author"] != self.user.email:
+            await self.send(json.dumps({
+                "type": event["type"],
+                "author": event["author"],
+                "offer": event["body"],
+            }))
+
+    async def answer_sdp(self, event):
+        if event["author"] != self.user.email:
+            await self.send(json.dumps({
+                "type": event["type"],
+                "author": event["author"],
+                "answer": event["body"],
+            }))
     
     async def bye(self, event):
         await self.send_json({
@@ -125,19 +154,3 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
             "data": event["data"]
         })
 
-    async def hello(self, event):
-        await self.send_json(
-            {
-                "type": "hello",
-                "message": event["message"],
-                "name": event["full_name"],
-            }
-        )
-    
-    async def created_room(self, event):
-        await self.send_json({
-            "type": "created",
-            "data":{
-                "message": "Room has been created",
-            }
-        })
