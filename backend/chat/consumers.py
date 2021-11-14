@@ -120,6 +120,7 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
         await self.send(text_data=json.dumps(
             {
                 "type": type,
+                "me": self.user.email,
             })
         )
 
@@ -131,6 +132,13 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
                 })
             )
 
+    async def ice_candidate(self, event):
+        if event["author"] != self.user.email:
+            await self.send(text_data=json.dumps({
+                "type": event["type"],
+                "candidate": event["body"],
+                "author": event["author"]
+            }))
 
     async def offer_sdp(self, event):
         if event["author"] != self.user.email:
