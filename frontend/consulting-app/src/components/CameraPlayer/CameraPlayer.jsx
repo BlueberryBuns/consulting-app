@@ -3,14 +3,17 @@ import Box from "@mui/material/Box";
 
 const CameraPlayer = (props) => {
   return !!props.videoRef ? (
-    <video
-      playsInline
-      ref={props.videoRef}
-      onCanPlay={props.handleCanPlay}
-      muted={props.isMuted} // @ TODO(hulewicz) potenctially overlooked bug
-      autoPlay
-      width={"400px"}
-    ></video>
+    <>
+      <div>{props.client}</div>
+      <video
+        playsInline
+        ref={props.videoRef}
+        onCanPlay={props.handleCanPlay}
+        muted={props.isMuted} // @ TODO(hulewicz) potenctially overlooked bug
+        autoPlay
+        width={"400px"}
+      ></video>
+    </>
   ) : (
     <Box
       sx={{
