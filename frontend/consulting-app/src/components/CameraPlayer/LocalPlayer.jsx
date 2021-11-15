@@ -21,6 +21,7 @@ const LocalPlayer = (props) => {
             isCameraSet = true;
             videoRef.current.srcObject = stream;
             props.videoRef.current = videoRef.current;
+            props.cameraSet.isReady = !isCameraSet;
           }
         } else {
           console.log("Something went wrong with videoref setup");
