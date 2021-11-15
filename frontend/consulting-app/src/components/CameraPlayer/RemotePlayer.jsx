@@ -39,7 +39,7 @@ const RemotePlayer = (props) => {
   if (videoRef && videoRef.current && globalStore.mediaStream !== undefined) {
     if (!isCameraSet) {
       isCameraSet = true;
-      videoRef.current.srcObject = globalStore.mediaStream;
+      videoRef.current.srcObject = props.stream; //globalStore.mediaStream;
     }
   } else {
     console.log("Something went wrong with videoref setup");
@@ -51,9 +51,10 @@ const RemotePlayer = (props) => {
 
   return (
     <CameraPlayer
+      client={"remote camera"}
       handleCanPlay={handleCanPlay}
-      isMuted={true}
-      videoRef={undefined} //{videoRef}
+      isMuted={false}
+      videoRef={videoRef} //{videoRef}
     />
   );
 };
