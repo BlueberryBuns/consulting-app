@@ -32,11 +32,17 @@ const LocalPlayer = (props) => {
     props.videoRef.current?.play();
   };
 
+  const handleIsStopped = () => {
+    return;
+  };
+
   return (
     <CameraPlayer
       videoRef={props.videoRef}
       handleCanPlay={handleCanPlay}
       isMuted={true}
+      size={"300px"}
+      handleIsStopped={handleIsStopped}
     />
   );
 };

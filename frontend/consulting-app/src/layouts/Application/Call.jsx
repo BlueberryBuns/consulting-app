@@ -7,6 +7,7 @@ import { useStore } from "../../stores/custom-store/store";
 import initialCameraSetup from "../../media-utils/base-config";
 
 import CameraPlayer from "../../components/CameraPlayer/CameraPlayer";
+import { Button, Card, Grid, Paper } from "@mui/material";
 
 const CAMERA_CONFIG = { ...initialCameraSetup };
 
@@ -44,6 +45,7 @@ const CallView = () => {
   useEffect(() => {
     const getMedia = async () => {
       try {
+        console.log(navigator);
         stream = await navigator.mediaDevices.getUserMedia(CAMERA_CONFIG);
         console.log(videoRef);
         console.log(stream);
@@ -68,7 +70,8 @@ const CallView = () => {
   if (location.protocol == "https:") {
     webSocketType = "wss://";
   }
-  const serverAddr = "localhost:8000";
+  const serverAddr = "192.168.50.39:8000";
+  // const serverAddr = "localhost:8000";
   let wSocketAddr =
     webSocketType +
     serverAddr +
@@ -379,14 +382,31 @@ const CallView = () => {
 
   return (
     <>
-      <LocalPlayer videoRef={videoRef} />
-      <RemotePlayer videoRef={remoteRef} />
-      {/*<CameraPlayer
-      isMuted={true}
-      handleCanPlay={handleCanPlay}
-      videoRef={videoRef}
-    /> */}
+      <main>
+        <Grid container spacing={2}>
+          <Grid py={1} item xs={6} md={8} m={4} p={4}>
+            <RemotePlayer videoRef={remoteRef} />
+          </Grid>
+          <Grid>
+            <Grid py={1} item xs={6} md={4}>
+              <LocalPlayer videoRef={videoRef} />
+            </Grid>
+            <Grid py={1} item xs={6} md={4}>
+              <LocalPlayer videoRef={videoRef} />
+            </Grid>
+          </Grid>
+        </Grid>
+      </main>
     </>
+  );
+};
+
+const Item = (props) => {
+  return (
+    <div>
+      <h2>{props.item.name}</h2>
+      <p>{props.item.description}</p>
+    </div>
   );
 };
 

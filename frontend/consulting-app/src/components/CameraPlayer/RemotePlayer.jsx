@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // import { useStore } from "../../custom-store/store";
 import { useStore } from "../../stores/custom-store/store";
 import initialCameraSetup from "../../media-utils/base-config";
@@ -11,7 +11,11 @@ const CAMERA_CONFIG = { ...initialCameraSetup };
 
 const RemotePlayer = (props) => {
   // const [globalStore, dispatch] = useStore();
-  const videoRef = useRef();
+  const [ready, setReady] = useState(true);
+
+  useEffect(() => {
+    console.log("CHANEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED");
+  }, [ready]);
   //const assignCamera = () => {
   /**TODO (hulewicz) Add error handling in case of both audio and video
    * being disabled make as output stream empty, black canvas with no
@@ -51,11 +55,19 @@ const RemotePlayer = (props) => {
     props.videoRef.current?.play();
   };
 
+  const handleIsStopped = () => {
+    setReady((ready) => {
+      return !ready;
+    });
+  };
+
   return (
     <CameraPlayer
       handleCanPlay={handleCanPlay}
       isMuted={false}
+      size={`${window.innerWidth / 1.55}wh`}
       videoRef={props.videoRef}
+      handleIsStopped={handleIsStopped}
     />
   );
 };
