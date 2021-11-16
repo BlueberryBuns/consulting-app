@@ -27,8 +27,6 @@ boilerplate.zip
 
 migrations
 
-/chat/middleware.py
-
 tests/
 
 pytest.ini
