@@ -1,10 +1,14 @@
 import LocalPlayer from "../../components/CameraPlayer/LocalPlayer";
 import RemotePlayer from "../../components/CameraPlayer/RemotePlayer";
-import initialCameraSetup from "../../media-utils/base-config";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useStore } from "../../stores/custom-store/store";
+import initialCameraSetup from "../../media-utils/base-config";
+
+import CameraPlayer from "../../components/CameraPlayer/CameraPlayer";
+
+const CAMERA_CONFIG = { ...initialCameraSetup };
 
 const iceConfiguration = {
   iceServers: [
@@ -17,31 +21,53 @@ const iceConfiguration = {
 };
 
 const connections = {};
-const channels = {};
-
-const CAMERA_CONFIG = { ...initialCameraSetup };
 const cameraIsSet = { isReady: false };
+let isCameraSet = false;
 let isInitiator = false;
-let isChannelReady = false;
-let myEmail;
 
 console.log("IS INITIATOR: ", isInitiator);
 
 const CallView = () => {
-  const remoteMediaStream = new MediaStream();
+  let remoteMediaStream = new MediaStream();
   const authState = useSelector((state) => state.account);
-  let localStream;
-  let remoteStream;
-  const localRef = useRef();
-  const remoteRef = useRef();
 
+  let testedRef;
+  let stream;
+
+  const videoRef = useRef();
+  const remoteRef = useRef();
+  console.log(videoRef);
+  console.log(remoteRef);
   let location = window.location;
   let webSocketType = "ws://";
+
+  useEffect(() => {
+    const getMedia = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(CAMERA_CONFIG);
+        console.log(videoRef);
+        console.log(stream);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (videoRef) {
+          videoRef.current.srcObject = stream;
+          isCameraSet = true;
+          console.log(videoRef);
+        }
+        // } else {
+        //   console.log(videoRef);
+        //   console.log(videoRef);
+        //   console.log(videoRef.current);
+        // }
+      }
+    };
+    getMedia();
+  }, []);
 
   if (location.protocol == "https:") {
     webSocketType = "wss://";
   }
-
   const serverAddr = "localhost:8000";
   let wSocketAddr =
     webSocketType +
@@ -50,7 +76,6 @@ const CallView = () => {
     authState.accessToken; // + location.pathname;
 
   const ws = new WebSocket(wSocketAddr);
-
   //https://webrtc.org/getting-started/peer-connections
 
   ws.onopen = (event) => {
@@ -76,20 +101,38 @@ const CallView = () => {
   ws.onmessage = (event) => {
     switch (JSON.parse(event.data).type) {
       case "create":
-        myEmail = JSON.parse(event.data).me;
+        console.log("1. CREATED THE ROOM");
         isInitiator = true;
+        const foo = async () => {
+          try {
+            if (videoRef && videoRef.current) {
+              console.log(videoRef, "INSIDE");
+            }
+            console.log(videoRef, "outside");
+          } catch (err) {
+          } finally {
+          }
+        };
+        foo();
         break;
 
       case "join":
         const joinRoom = async () => {
-          console.log("1. Joining Channel...");
+          console.log("1. JOINING CHANNEL");
           // I should have user media got at this point
           try {
-            let _ = await waitForSomeTime();
+            const localStream = await navigator.mediaDevices.getUserMedia(
+              CAMERA_CONFIG
+            );
+            console.log(localStream);
+            console.log("got new Localstream");
+            if (videoRef && videoRef.current) {
+              videoRef.current.srcObject = localStream;
+            }
           } catch (error) {
             console.log(error);
           } finally {
-            console.log("Continue");
+            console.log("2. SENDING ANNOUNCEMENT");
             ws.send(
               JSON.stringify({
                 type: "join.announced",
@@ -99,9 +142,11 @@ const CallView = () => {
           }
         };
         joinRoom();
+        console.log("sending join message");
         break;
 
       case "join.announced":
+        console.log("2. RECEIVED JOIN ANNOUNCEMENT, STARTING CALL");
         /*TODO (hulewicz):
          *
          * 1. Calling procedure
@@ -123,16 +168,14 @@ const CallView = () => {
         break;
 
       case "offer.sdp":
+        console.log("3. RECEIVED CALL, ANSWERING, GOT SDP OFFER");
         answerCall(connections, ws, event);
         break;
 
       case "ice.candidate":
+        console.log("RECEIVED ICE CANDIDATE");
         const acceptCandidate = async () => {
           let data = JSON.parse(event.data);
-          const candidate = data.candidate;
-          console.log(candidate.candidate);
-          // console.log(event.iceCandidate);
-          // console.log(event);
           try {
             await connections[data.author].addIceCandidate(
               data.candidate.candidate
@@ -149,11 +192,12 @@ const CallView = () => {
         break;
 
       case "answer.sdp":
+        console.log("4. ANSWERING SDP CONNECTIONS");
         answerSDP(connections, event);
         break;
 
       case "bye":
-        console.log(event.data);
+        disconnectUser(connections, event);
         break;
 
       default:
@@ -170,6 +214,17 @@ const CallView = () => {
     });
   };
 
+  const disconnectUser = (peerConnections, e) => {
+    const data = JSON.parse(e.data);
+    const disconnectedUser = data.data["disconnected_user"].email;
+    // delete peerConnections[disconnectedUser];
+    console.log("current ref:", remoteRef.current);
+    remoteMediaStream.getTracks().forEach((track) => {
+      remoteMediaStream.removeTrack(track);
+      console.log("removed track", track);
+    });
+  };
+
   const addPeerConnectionListeners = (peerConnections, webSocket, e) => {
     const data = JSON.parse(e.data);
     console.log("PEER CONNECTION LISTENERS ARE SET");
@@ -178,58 +233,94 @@ const CallView = () => {
     };
 
     peerConnections[data.author].onicecandidate = (event) => {
-      ws.send(
-        JSON.stringify({
-          toGroup: true,
-          type: "ice.candidate",
-          candidate: event.candidate,
-        })
-      );
+      try {
+        ws.send(
+          JSON.stringify({
+            toGroup: true,
+            type: "ice.candidate",
+            candidate: event.candidate,
+          })
+        );
+      } catch (err) {}
     };
 
     peerConnections[data.author].onicegatheringstatechange = (event) => {
-      console.log(
-        `ICE gathering state changed: ${
-          peerConnections[data.author].iceGatheringState
-        }`
-      );
+      try {
+        console.log(
+          `ICE gathering state changed: ${
+            peerConnections[data.author].iceGatheringState
+          }`
+        );
+      } catch (err) {}
     };
 
     peerConnections[data.author].onconnectionstatechange = (event) => {
-      console.log(
-        `Connection state change: ${
-          peerConnections[data.author].connectionState
-        }`
-      );
+      try {
+        console.log(
+          `Connection state change: ${
+            peerConnections[data.author].connectionState
+          }`
+        );
+        if (peerConnections[data.author].connectionState === "connected") {
+          console.log("before removal");
+          console.log(remoteMediaStream.getTracks());
+        }
+      } catch (err) {}
     };
 
     peerConnections[data.author].onsignalingstatechange = (event) => {
-      console.log(
-        `Signaling state change: ${peerConnections[data.author].signalingState}`
-      );
+      try {
+        console.log(
+          `Signaling state change: ${
+            peerConnections[data.author].signalingState
+          }`
+        );
+      } catch (err) {}
     };
 
     peerConnections[data.author].oniceconnectionstatechange = (event) => {
-      console.log(
-        `ICE connection state change: ${
-          peerConnections[data.author].iceConnectionState
-        }`
-      );
+      try {
+        console.log(
+          `ICE connection state change: ${
+            peerConnections[data.author].iceConnectionState
+          }`
+        );
+        if (
+          peerConnections[data.author].iceConnectionState === "disconnected"
+        ) {
+          remoteMediaStream.getTracks().forEach((track) => {
+            remoteMediaStream.removeTrack(track);
+            console.log("removed track", track);
+          });
+          console.log("after removal");
+          console.log(remoteMediaStream.getTracks());
+          delete peerConnections[data.author];
+        }
+      } catch (err) {}
     };
 
     peerConnections[data.author].ontrack = async (event) => {
-      console.log("NEW TRACK");
-      console.log(event.track);
-      remoteMediaStream.addTrack(event.track, remoteMediaStream);
+      try {
+        console.log("NEW TRACK");
+        console.log(event.track);
+        remoteMediaStream.addTrack(event.track, remoteMediaStream);
+        console.log("MEDIASTREAM AFTER ADDING ALL TRACKS", remoteMediaStream);
+        remoteRef.current.srcObject = remoteMediaStream;
+      } catch (err) {}
     };
   };
 
   const answerCall = async (peerConnections, webSocket, e) => {
     const data = JSON.parse(e.data);
     peerConnections[data.author] = new RTCPeerConnection(iceConfiguration);
-    localRef.current.srcObject.getTracks().forEach((track) => {
-      peerConnections[data.author].addTrack(track, localRef.current.srcObject);
-    });
+    if (videoRef.current) {
+      videoRef.current.srcObject.getTracks().forEach((track) => {
+        peerConnections[data.author].addTrack(
+          track,
+          videoRef.current.srcObject
+        );
+      });
+    }
     addPeerConnectionListeners(peerConnections, webSocket, e);
     peerConnections[data.author].setRemoteDescription(
       new RTCSessionDescription(data.offer.offer)
@@ -249,9 +340,16 @@ const CallView = () => {
   const makeCall = async (peerConnections, webSocket, e) => {
     const data = JSON.parse(e.data);
     peerConnections[data.author] = new RTCPeerConnection(iceConfiguration);
-    localRef.current.srcObject.getTracks().forEach((track) => {
-      peerConnections[data.author].addTrack(track, localRef.current.srcObject);
-    });
+    if (videoRef.current) {
+      videoRef.current.srcObject.getTracks().forEach((track) => {
+        peerConnections[data.author].addTrack(
+          track,
+          videoRef.current.srcObject
+        );
+      });
+    } else {
+      console.log("No nie wykonałop się");
+    }
     addPeerConnectionListeners(peerConnections, webSocket, e);
     const offer = await peerConnections[data.author].createOffer();
     await peerConnections[data.author].setLocalDescription(offer);
@@ -275,18 +373,19 @@ const CallView = () => {
         remotePeerDescription
       );
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   return (
     <>
-      <LocalPlayer
-        videoRef={localRef}
-        stream={localStream}
-        cameraSet={cameraIsSet}
-      />
-      <RemotePlayer videoRef={remoteRef} stream={remoteMediaStream} />
+      <LocalPlayer videoRef={videoRef} />
+      <RemotePlayer videoRef={remoteRef} />
+      {/*<CameraPlayer
+      isMuted={true}
+      handleCanPlay={handleCanPlay}
+      videoRef={videoRef}
+    /> */}
     </>
   );
 };

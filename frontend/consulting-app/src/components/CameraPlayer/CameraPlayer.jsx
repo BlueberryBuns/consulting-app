@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 const CameraPlayer = (props) => {
   return !!props.videoRef ? (
     <>
-      <div>{props.client}</div>
       <video
         playsInline
         ref={props.videoRef}
