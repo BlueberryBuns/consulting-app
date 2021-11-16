@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import initialCameraSetup from "../../media-utils/base-config";
 import CameraPlayer from "./CameraPlayer";
 
@@ -7,40 +7,42 @@ let isCameraSet = false;
 let stream;
 
 const LocalPlayer = (props) => {
-  const videoRef = useRef();
+  // const videoRef = useRef();
 
-  useEffect(() => {
-    const userMedia = async () => {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia(CAMERA_CONFIG);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        if (videoRef && videoRef.current && stream !== undefined) {
-          if (!isCameraSet) {
-            isCameraSet = true;
-            videoRef.current.srcObject = stream;
-            props.videoRef.current = videoRef.current;
-            props.cameraSet.isReady = !isCameraSet;
-          }
-        } else {
-          console.log("Something went wrong with videoref setup");
-        }
-      }
-    };
-    userMedia();
-  }, []);
+  // useEffect(() => {
+  //   const userMedia = async () => {
+  //     try {
+  //       stream = await navigator.mediaDevices.getUserMedia(CAMERA_CONFIG);
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       if (videoRef && videoRef.current && stream !== undefined) {
+  //         if (!isCameraSet) {
+  //           isCameraSet = true;
+  //           videoRef.current.srcObject = stream;
+  //           props.videoRef = videoRef;
+  //         }
+  //       }
+  //     }
+  //   };
+  //   userMedia();
+  // }, []);
 
   const handleCanPlay = () => {
-    videoRef.current?.play();
+    props.videoRef.current?.play();
+  };
+
+  const handleIsStopped = () => {
+    return;
   };
 
   return (
     <CameraPlayer
-      client={"Local Camera"}
+      videoRef={props.videoRef}
       handleCanPlay={handleCanPlay}
       isMuted={true}
-      videoRef={videoRef}
+      size={"300px"}
+      handleIsStopped={handleIsStopped}
     />
   );
 };
