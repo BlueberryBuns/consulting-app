@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'chat',
     'core',
     'rest_framework',
+    'django_extensions',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -158,10 +159,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
     CURRENT_DOMAIN,
+    "https://192.168.50.239:3000",
 ]
 
 CORS_ORIGIN_WHITELIST = [
     CURRENT_DOMAIN,
+    "https://192.168.50.239:3000",
 ]
 
 

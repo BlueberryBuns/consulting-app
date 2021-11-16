@@ -70,8 +70,8 @@ const CallView = () => {
   if (location.protocol == "https:") {
     webSocketType = "wss://";
   }
+
   const serverAddr = "192.168.50.39:8000";
-  // const serverAddr = "localhost:8000";
   let wSocketAddr =
     webSocketType +
     serverAddr +
