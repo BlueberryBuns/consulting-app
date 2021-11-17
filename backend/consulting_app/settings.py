@@ -13,7 +13,7 @@ import os
 import datetime
 from pathlib import Path
 
-CURRENT_DOMAIN = "http://localhost:3000"
+CURRENT_DOMAIN = "http://localhost:3001"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,7 +148,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = os.path.join(BASE_DIR, '../static_files')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -160,11 +160,15 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     CURRENT_DOMAIN,
     "https://192.168.50.239:3000",
+    "http://application.blueberrybuns.com:12345",
+    "https://application.blueberrybuns.com:12345",
 ]
 
 CORS_ORIGIN_WHITELIST = [
     CURRENT_DOMAIN,
     "https://192.168.50.239:3000",
+    "http://application.blueberrybuns.com:12345",
+    "https://application.blueberrybuns.com:12345",
 ]
 
 

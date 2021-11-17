@@ -1,23 +1,81 @@
-version: '3'
+version: "3.8"
 services:
-  db:
-    image: postgres
+  backend:
+    build:
+      context: ./backend
+    command: daphne --bind 0.0.0.0 --port 8000 consulting_app.asgi:application
+    container_name: backend
+    depends_on:
+      - redis
+      - database
+    environment:
+      - REDIS=redis://redis:6379/0
+      - USER=postgres
+      - PASSWORD=postgres
+      - HOST=database
+      - PGDB=postgres
+      - PORT=5432
+    ports:
+      - 8001:8000
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - ./backend:/usr/src/app
+
+  redis:
+    container_name: redis
+    image: redis:6-alpine
+
+  database:
+    image: postgres:13-alpine
+    volumes:
+      - database:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    container_name: postgres_database
+    container_name: database
+    expose:
+      - 5432
 
-  web:
+  frontend:
     build:
-      context: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
-    volumes:
-      - /usr/src/app
-      - /usr/src/app/static
+      context: ./frontend/consulting-app
+    command: npm start
+    container_name: frontend
     depends_on:
-      - db
+      - backend
+    ports:
+      - 3001:3000
+    # stdin_open: true
+    # tty: true
+    volumes:
+      - ./frontend/consulting-app:/usr/src/app
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    environment:
+      - NGINX_PORT=80
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - media_files:/usr/src/app/media_files
+      - static_files:/usr/src/app/static_files
+      - ./nginx/development.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    depends_on:
+      - frontend
+      - backend
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+
+volumes:
+  database:
+  static_files:
+  media_files:
