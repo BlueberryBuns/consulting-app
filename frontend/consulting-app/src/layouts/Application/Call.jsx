@@ -22,7 +22,6 @@ const iceConfiguration = {
 };
 
 const connections = {};
-const cameraIsSet = { isReady: false };
 let isCameraSet = false;
 let isInitiator = false;
 
@@ -32,15 +31,12 @@ const CallView = () => {
   let remoteMediaStream = new MediaStream();
   const authState = useSelector((state) => state.account);
 
-  let testedRef;
   let stream;
 
   const videoRef = useRef();
   const remoteRef = useRef();
   console.log(videoRef);
   console.log(remoteRef);
-  let location = window.location;
-  let webSocketType = "ws://";
 
   useEffect(() => {
     const getMedia = async () => {
@@ -57,28 +53,18 @@ const CallView = () => {
           isCameraSet = true;
           console.log(videoRef);
         }
-        // } else {
-        //   console.log(videoRef);
-        //   console.log(videoRef);
-        //   console.log(videoRef.current);
-        // }
       }
     };
     getMedia();
   }, []);
 
-  if (location.protocol == "https:") {
-    webSocketType = "wss://";
-  }
+  let webSocketScheme = window.location.protocol === "https:" ? "wss:" : "ws:";
+  let url = `${webSocketScheme}//${window.location.host}`;
+  console.log(url);
 
-  const serverAddr = "192.168.50.39:8000";
-  let wSocketAddr =
-    webSocketType +
-    serverAddr +
-    "/ws/chat/room/123/?token=" +
-    authState.accessToken; // + location.pathname;
-
+  let wSocketAddr = `${url}/ws/chat/room/123/?token=${authState.accessToken}`;
   const ws = new WebSocket(wSocketAddr);
+  console.log(wSocketAddr);
   //https://webrtc.org/getting-started/peer-connections
 
   ws.onopen = (event) => {

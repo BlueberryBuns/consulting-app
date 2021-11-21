@@ -8,8 +8,8 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer, AsyncWebsocke
 __all__ = ["VideoRoomChatConsumer"]
 
 
-class UserAvaliableNotificationConsumer(AsyncJsonWebsocketConsumer):
-    ...
+# class UserAvaliableNotificationConsumer(AsyncJsonWebsocketConsumer):
+#     ...
 
 
 class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
@@ -28,7 +28,7 @@ class VideoRoomChatConsumer(AsyncJsonWebsocketConsumer):
     initiator = False
 
     async def connect(self) -> None:
-
+        print("Hello")
         """
         General flow when connecting to django chat channel:
         If any of actions listed below fail, connection is closed
