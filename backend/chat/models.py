@@ -26,3 +26,5 @@ class Visit(models.Model):
     atendees = models.ManyToManyField(User)
     visit_date = models.DateTimeField(blank=False, null=False)
     
+    def __str__(self):
+        return f"{self.visit_date}-{self.id}"

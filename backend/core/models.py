@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.base import Model
+from django.utils.translation import gettext_lazy as _
 
 from .utils import UserDataValidator
 
@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Cannot create user properly, missing user object")
         user.is_staff = True
         user.is_superuser = True
-        user.role = Roles.objects.get(id=Roles.ADMIN)
+        user.role = Roles.objects.get(id=Roles._Roles.ADMIN)
 
         return user
 
@@ -42,7 +42,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Cannot create user properly, missing user object")
         user.is_staff = True
         user.is_superuser = False
-        user.role = Roles.objects.get(id=Roles.MODERATOR)
+        user.role = Roles.objects.get(id=Roles._Roles.MODERATOR)
 
         return user
 
@@ -52,7 +52,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Cannot create user properly, missing user object")
         user.is_staff = True
         user.is_superuser = False
-        user.role = Roles.objects.get(id=Roles.DOCTOR)
+        user.role = Roles.objects.get(id=Roles._Roles.DOCTOR)
 
         return user
 
@@ -62,30 +62,37 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Cannot create user properly, missing user object")
         user.is_staff = True
         user.is_superuser = False
-        user.role = Roles.objects.get(id=Roles.PATIENT)
+        user.role = Roles.objects.get(id=Roles._Roles.PATIENT)
 
         return user
 
 class Roles(models.Model):
+    class Meta:
+        verbose_name = "Role"
+        verbose_name_plural = "Roles"
 
-    USER = 1
-    PATIENT = 2
-    DOCTOR = 3
-    MODERATOR = 4
-    ADMIN = 5
+    class _Roles(models.TextChoices):
+        USER = 1, _("USER")
+        PATIENT = 2, _("PATIENT")
+        DOCTOR = 3, _("DOCTOR")
+        MODERATOR = 4, _("MODERATOR")
+        ADMIN = 5, _("ADMIN")
 
-    ROLES = (
-        (USER, 'user'),
-        (PATIENT, 'patient'),
-        (DOCTOR, 'doctor'),
-        (MODERATOR, 'moderator'),
-        (ADMIN, 'admin'),
-    )
+    name = models.TextField(max_length=10, blank=False, null=False, choices=_Roles.choices)
+    
+    def __str__(self):
+        return self.name
 
-    name = models.TextField(max_length=10, blank=False, null=False)
 
-class Nationalities(models.Model):
+class Nationality(models.Model):
+    class Meta:
+        verbose_name = "Nationality"
+        verbose_name_plural = "Nationalities"
+
     nationality = models.CharField(max_length=60, unique=True, null=False, blank=False)
+
+    def __str__(self):
+        return self.nationality
 
 class User(AbstractUser):
     class Meta:
@@ -101,22 +108,23 @@ class User(AbstractUser):
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     email = models.EmailField(max_length=256, unique=True)
-    username = None
-    # roles = models.ManyToManyField(to=Roles, blank=False, null=False)
-    role = models.ForeignKey(to=Roles, blank=False, null=False, on_delete=models.SET(Roles.USER), default=Roles.USER)
+    # roles = models.ManyToManyField(to=Roles, blank=False, null=False, choices=)
+    role = models.ForeignKey(to=Roles, blank=False, null=False, 
+                                on_delete=models.SET(Roles._Roles.USER),
+                                default=Roles._Roles.USER)
     first_name = models.CharField(max_length=40, blank=False, null=False)
     middle_names = models.CharField(max_length=120, blank=True, null=True)
     pesel = models.CharField(max_length=11, blank=False, null=True)
     last_name = models.CharField(max_length=80)
     password = models.CharField(max_length=128)
-    nationality = models.ForeignKey(to=Nationalities, blank=False, null=True, on_delete=models.SET_NULL)
-    # doctors_id = models.OneToOneField(to=)
+    nationality = models.ForeignKey(to=Nationality, blank=False, null=True, on_delete=models.SET_NULL)
+    doctors_id = models.OneToOneField(to=)
 
 
     objects = CustomUserManager()
 
     def __str__(self):
-        return f"Object {__name__}: {self.__dict__.items()}"
+        return f"{self.email}:{self.last_name}"
 
     @property
     def full_name(self):
@@ -124,8 +132,18 @@ class User(AbstractUser):
             return f"{self.first_name} {self.middle_names} {self.last_name}" 
         return f"{self.first_name} {self.last_name}"
 
-class Images(models.Model):
-    photo = models.ImageField(width_field=600, height_field=600)
+
+class UserDirectory:
+    @staticmethod
+    def get_path(data_instance, filename: str) -> str:
+        return f"{data_instance.uploaded_by.id}/%Y/%m/%d/{filename}"
+
+
+class Image(models.Model):
+    class Meta:
+        verbose_name = "Image"
+        verbose_name_plural = "Images"
+    photo = models.ImageField(upload_to=UserDirectory.get_path)
     upload_date = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(to=User, on_delete=models.DO_NOTHING)
     
