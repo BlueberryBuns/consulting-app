@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .utils import UserDataValidator
 
+from med_backend.models import Doctor
 
 class CustomUserManager(BaseUserManager):
 
@@ -118,7 +119,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=80)
     password = models.CharField(max_length=128)
     nationality = models.ForeignKey(to=Nationality, blank=False, null=True, on_delete=models.SET_NULL)
-    doctors_id = models.OneToOneField(to=)
+    doctors_id = models.OneToOneField(to=Doctor, blank=True, null=True)
 
 
     objects = CustomUserManager()

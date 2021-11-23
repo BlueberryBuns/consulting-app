@@ -5,8 +5,8 @@ from .models import User
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 
-class SuperUser(DefaultUserAdmin):
-    ordering = ["id"]
+# class SuperUser(DefaultUserAdmin):
+#     ordering = ["id"]
 
 
-admin.site.register(User, SuperUser)
+admin.site.register(User)
