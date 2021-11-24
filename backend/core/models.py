@@ -4,11 +4,10 @@ from uuid import uuid4
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.deletion import DO_NOTHING
 from django.utils.translation import gettext_lazy as _
 
 from .utils import UserDataValidator
-
-from med_backend.models import Doctor
 
 class CustomUserManager(BaseUserManager):
 
@@ -95,6 +94,27 @@ class Nationality(models.Model):
     def __str__(self):
         return self.nationality
 
+    
+
+class Specialization(models.Model):
+    specialization = models.CharField(max_length=35, blank=False, null=False)
+
+
+class Doctor(models.Model):
+    class _Titles(models.TextChoices):
+        UNKNOWN = "", ""
+        LEK_MED = "lek. med.", "lek. med."
+        LEK_DENT = "lek. dent.", "lek. dent."
+        DR_N_MED = "dr n. med.", "dr n. med."
+        DR_HAB_N_MED = "dr hab n. med.", "dr hab n. med."
+        PROF_DR_HAB = "prof. dr hab", "prof. dr hab"
+
+    specializations = models.ManyToManyField(default=None, to=Specialization)
+    academic_title = models.TextField(choices=_Titles.choices, default=_Titles.UNKNOWN)
+
+    def __str__(self):
+        return self.specialization
+
 class User(AbstractUser):
     class Meta:
         ...
@@ -109,7 +129,6 @@ class User(AbstractUser):
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     email = models.EmailField(max_length=256, unique=True)
-    # roles = models.ManyToManyField(to=Roles, blank=False, null=False, choices=)
     role = models.ForeignKey(to=Roles, blank=False, null=False, 
                                 on_delete=models.SET(Roles._Roles.USER),
                                 default=Roles._Roles.USER)
@@ -119,7 +138,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=80)
     password = models.CharField(max_length=128)
     nationality = models.ForeignKey(to=Nationality, blank=False, null=True, on_delete=models.SET_NULL)
-    doctors_id = models.OneToOneField(to=Doctor, blank=True, null=True)
+    doctors_id = models.OneToOneField(to=Doctor, blank=True, null=True, on_delete=DO_NOTHING)
 
 
     objects = CustomUserManager()
@@ -147,7 +166,6 @@ class Image(models.Model):
     photo = models.ImageField(upload_to=UserDirectory.get_path)
     upload_date = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(to=User, on_delete=models.DO_NOTHING)
-    
 
 
 # class Doctors(models.Model):

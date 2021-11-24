@@ -1,25 +1,6 @@
 from django.db import models
 
-from core.models import User
-
-class Specialization(models.Model):
-    specialization = models.CharField(max_length=35, blank=False, null=False)
-
-    def __str__(self):
-        return self.specialization
-
-class Doctor(models.Model):
-    class _Titles(models.TextChoices):
-        UNKNOWN = "", ""
-        LEK_MED = "lek. med.", "lek. med."
-        LEK_DENT = "lek. dent.", "lek. dent."
-        DR_N_MED = "dr n. med.", "dr n. med."
-        DR_HAB_N_MED = "dr hab n. med.", "dr hab n. med."
-        PROF_DR_HAB = "prof. dr hab", "prof. dr hab"
-
-    specializations = models.ManyToManyField(default=None, to=Specialization)
-    academic_title = models.TextField(choices=_Titles.choices, default=_Titles.UNKNOWN)
-
+from core.models import User, Doctor
 
 class MedicalEntry(models.Model):
     class Meta:

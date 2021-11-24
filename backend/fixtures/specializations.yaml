@@ -1,400 +1,400 @@
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 1
   fields:
     specialization: ginekolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 2
   fields:
     specialization: psycholog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 3
   fields:
     specialization: stomatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 4
   fields:
     specialization: psychiatra
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 5
   fields:
     specialization: ortopeda
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 6
   fields:
     specialization: chirurg
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 7
   fields:
     specialization: dermatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 8
   fields:
     specialization: laryngolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 9
   fields:
     specialization: pediatra
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 10
   fields:
     specialization: internista
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 11
   fields:
     specialization: fizjoterapeuta
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 12
   fields:
     specialization: neurolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 13
   fields:
     specialization: endokrynolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 14
   fields:
     specialization: okulista
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 15
   fields:
     specialization: urolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 16
   fields:
     specialization: kardiolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 17
   fields:
     specialization: psychoterapeuta
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 18
   fields:
     specialization: gastrolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 19
   fields:
     specialization: neurochirurg
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 20
   fields:
     specialization: lekarz rodzinny
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 21
   fields:
     specialization: radiolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 22
   fields:
     specialization: dietetyk
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 23
   fields:
     specialization: alergolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 24
   fields:
     specialization: onkolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 25
   fields:
     specialization: pulmonolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 26
   fields:
     specialization: diabetolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 27
   fields:
     specialization: specjalista medycyny estetycznej
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 28
   fields:
     specialization: reumatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 29
   fields:
     specialization: ortodonta
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 30
   fields:
     specialization: chirurg plastyczny
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 31
   fields:
     specialization: chirurg naczyniowy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 32
   fields:
     specialization: hematolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 33
   fields:
     specialization: proktolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 34
   fields:
     specialization: neurolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 35
   fields:
     specialization: logopeda
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 36
   fields:
     specialization: lekarz w trakcie specjalizacji
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 37
   fields:
     specialization: weterynarz
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 38
   fields:
     specialization: lekarz medycyny pracy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 39
   fields:
     specialization: seksuolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 40
   fields:
     specialization: nefrolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 41
   fields:
     specialization: osteopata
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 42
   fields:
     specialization: immunolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 43
   fields:
     specialization: ortopeda dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 44
   fields:
     specialization: psychiatra dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 45
   fields:
     specialization: chirurg dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 46
   fields:
     specialization: anestezjolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 47
   fields:
     specialization: laryngolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 48
   fields:
     specialization: lekarz chorób zakaźnych
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 49
   fields:
     specialization: psycholog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 50
   fields:
     specialization: chirurg szczękowo-twarzowy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 51
   fields:
     specialization: kardiolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 52
   fields:
     specialization: diagnostyk
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 53
   fields:
     specialization: gastrolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 54
   fields:
     specialization: położna/położny
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 55
   fields:
     specialization: chirurg stomatologiczny
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 56
   fields:
     specialization: urolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 57
   fields:
     specialization: flebolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 58
   fields:
     specialization: lekarz rehabilitacji medycznej
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 59
   fields:
     specialization: optometrysta
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 60
   fields:
     specialization: audiolog,foniatra
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 61
   fields:
     specialization: androlog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 62
   fields:
     specialization: kardiochirurg
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 63
   fields:
     specialization: endokrynolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 64
   fields:
     specialization: ultrasonografista
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 65
   fields:
     specialization: hepatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 66
   fields:
     specialization: okulista dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 67
   fields:
     specialization: geriatra
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 68
   fields:
     specialization: genetyk
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 69
   fields:
     specialization: fizjoterapeuta dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 70
   fields:
     specialization: lekarz sportowy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 71
   fields:
     specialization: angiolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 72
   fields:
     specialization: CovidTest
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 73
   fields:
     specialization: protetyk
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 74
   fields:
     specialization: stomatolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 75
   fields:
     specialization: higienistka stomatologiczna
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 76
   fields:
     specialization: hematolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 77
   fields:
     specialization: patomorfolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 78
   fields:
     specialization: pulmonolo gdziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 79
   fields:
     specialization: hipertensjolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 80
   fields:
     specialization: nefrolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 81
   fields:
     specialization: alergolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 82
   fields:
     specialization: neonatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 83
   fields:
     specialization: perinatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 84
   fields:
     specialization: bariatra
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 85
   fields:
     specialization: biegły sądowy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 86
   fields:
     specialization: ortoptysta
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 87
   fields:
     specialization: onkolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 88
   fields:
     specialization: neurochirur gdziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 89
   fields:
     specialization: chirurg klatki piersiowej
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 90
   fields:
     specialization: transplantolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 91
   fields:
     specialization: angiochirurg
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 92
   fields:
     specialization: ginekologia dziecięca
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 93
   fields:
     specialization: lekarz medycyny ratunkowej
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 94
   fields:
     specialization: radioterapeuta
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 95
   fields:
     specialization: reumatolog dziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 96
   fields:
     specialization: histopatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 97
   fields:
     specialization: diabetologdziecięcy
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 98
   fields:
     specialization: psychoonkolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 99
   fields:
     specialization: psychotraumatolog
-- model: med_backend.Specialization
+- model: core.Specialization
   pk: 100
   fields:
     specialization: terapeuta

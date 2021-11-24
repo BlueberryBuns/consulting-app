@@ -6,7 +6,26 @@ from rest_framework.generics import GenericAPIView
 from core.serializers import UserSerializer, LoginSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from rest_framework.generics import CreateAPIView
+
+
+class CreateModeratorAPIView(CreateAPIView):
+    authentication_classes = []
+    permission_classes = []
+    serializer_class = UserSerializer
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class CreateDoctorAPIView(CreateAPIView):
+    authentication_classes = []
+    permission_classes = []
+    serializer_class = UserSerializer
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class SignUpAPIView(CreateAPIView):
@@ -20,19 +39,11 @@ class SignUpAPIView(CreateAPIView):
 
 
 class LoginAPIView(TokenObtainPairView):
-    def post(self, request: req, *args, **kwargs):
-        print(request.data.get("email"))
-        queryset = User.objects.get(email=request.data.get("email"))
-        res = super().post(request, *args, **kwargs)
-
-        # username_str = " ".join([queryset.__dict__["first_name"],
-        #         queryset.__dict__["middle_names"],
-        #         queryset.__dict__["last_name"]])
-
-        res.data["username"] = "XD"#username_str
-        return res
-    # print(queryset)
     serializer_class = LoginSerializer
+
+    def post(self, request: req, *args, **kwargs):
+        res = super().post(request, *args, **kwargs)
+        return res
 
 class ReedeemRefreshTokenView():
     ...

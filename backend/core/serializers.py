@@ -70,6 +70,12 @@ class UserSerializer(ModelSerializer):
         return attrs
 
 
+class ModeratorSerializer(UserSerializer): ...
+
+
+class DoctorSerializer(UserSerializer): ...
+
+
 class LoginSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -78,4 +84,14 @@ class LoginSerializer(TokenObtainPairSerializer):
         for k, v in user_data.items():
             if k != "id":
                 token[k] = v
+        token["role"] = user.role_id
         return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data["role"] = self.user.role_id
+        data["firstName"] = self.user.first_name
+        data["lastName"] = self.user.last_name
+        return data
+
+class ImagerSerializer(ModelSerializer): ...
