@@ -1,15 +1,19 @@
 __all__ = ['UserDataValidator',]
 
+from typing import Tuple
+
+
 class UserValueError(ValueError): ...
 
 
 class UserDataValidator:
     @classmethod
-    def validate(cls, **kwargs):
+    def validate(cls, **kwargs) -> Tuple[str, str, str, str, str]:
         email = kwargs.get("email")
         password = kwargs.get("password")
         first_name = kwargs.get("first_name")
         last_name = kwargs.get("last_name")
+        middle_names = kwargs.get("middle_names")
 
         if not email:
             raise UserValueError("Cannot create user without email!")
@@ -20,4 +24,4 @@ class UserDataValidator:
         if not last_name:
             raise UserValueError("Cannot create user without last name!")
 
-        return email, password, first_name, last_name
+        return email, password, first_name, middle_names, last_name

@@ -33,8 +33,6 @@ class UserSerializer(ModelSerializer):
         }
 
     def create(self, validated_data: dict):
-        password = validated_data.pop("password")
-
         user_data = {
             key: val
             for key, val in validated_data.items()
@@ -44,12 +42,7 @@ class UserSerializer(ModelSerializer):
             ]
         }
 
-        instance = self.Meta.model(**user_data)
-
-        if password is not None:
-            instance.set_password(password)
-
-        instance.save()
+        instance = self.Meta.model.objects.create_patient(**user_data)
         return instance
 
     def validate(self, attrs: dict) -> dict:
@@ -70,10 +63,34 @@ class UserSerializer(ModelSerializer):
         return attrs
 
 
-class ModeratorSerializer(UserSerializer): ...
+class ModeratorSerializer(UserSerializer):
+    def create(self, validated_data: dict):
+        user_data = {
+            key: val
+            for key, val in validated_data.items()
+            if key
+            not in [
+                "password_confirmation",
+            ]
+        }
+
+        instance = self.Meta.model.objects.create_moderator(**user_data)
+        return instance
 
 
-class DoctorSerializer(UserSerializer): ...
+class DoctorSerializer(UserSerializer):
+    def create(self, validated_data: dict):
+        user_data = {
+            key: val
+            for key, val in validated_data.items()
+            if key
+            not in [
+                "password_confirmation",
+            ]
+        }
+
+        instance = self.Meta.model.objects.create_doctor(**user_data)
+        return instance
 
 
 class LoginSerializer(TokenObtainPairSerializer):
@@ -94,4 +111,4 @@ class LoginSerializer(TokenObtainPairSerializer):
         data["lastName"] = self.user.last_name
         return data
 
-class ImagerSerializer(ModelSerializer): ...
+class ImageSerializer(ModelSerializer): ...

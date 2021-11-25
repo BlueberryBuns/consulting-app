@@ -5,25 +5,23 @@ from core.models import User
 from rest_framework.generics import GenericAPIView
 from core.serializers import UserSerializer, LoginSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-
 from rest_framework.generics import CreateAPIView
-
+# from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import AllowAny
 
 class CreateModeratorAPIView(CreateAPIView):
-    authentication_classes = []
-    permission_classes = []
     serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
 class CreateDoctorAPIView(CreateAPIView):
-    authentication_classes = []
-    permission_classes = []
     serializer_class = UserSerializer
+
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
@@ -33,13 +31,15 @@ class SignUpAPIView(CreateAPIView):
         print(request.data)
         return super().post(request, *args, **kwargs)
     authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny,]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
 
 class LoginAPIView(TokenObtainPairView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny,]
+    authentication_classes = []
 
     def post(self, request: req, *args, **kwargs):
         res = super().post(request, *args, **kwargs)
