@@ -43,7 +43,6 @@ class VisitPatientAPIView(ListModelMixin,
         if kwargs.get("id"):
             return self.retrieve(request, *args, **kwargs)
         if date_lookup := kwargs.get("datelookup"):
-            print("!!!!!!!!!!!!!!!DATELOOKUP", date_lookup)
             date_lookup = parse(date_lookup)
             self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
 
