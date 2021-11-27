@@ -35,10 +35,11 @@ class VisitPatientAPIView(ListModelMixin,
     queryset = Visit.objects.all()
     # queryset = Visit.objects.filter()
 
-    def get(self, request, *args, primary_key=None, **kwargs):
+    def get(self, request, *args, **kwargs):
+        # queryset =
         print(request.__dict__, "\nArgs: ", args, "\nkwargs: ", kwargs)
-        if primary_key:
-            return self.retrieve(request, *args, primary_key, **kwargs)
+        if kwargs.get("pk"):
+            return self.retrieve(request, *args, **kwargs)
 
         return self.list(request, *args, **kwargs)
 

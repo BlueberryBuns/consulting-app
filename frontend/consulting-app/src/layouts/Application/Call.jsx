@@ -386,14 +386,7 @@ const CallView = () => {
         <Button
           onClick={async () => {
             try {
-              const res = await authAxios.post("/api/create/moderator", {
-                email: "moddd@user.com",
-                first_name: "b",
-                middle_names: "b",
-                last_name: "b",
-                password: "user",
-                password_confirmation: "user",
-              });
+              const res = await authAxios.get("/api/patient/visits");
               console.log(res);
             } catch (err) {
               console.log(err);
