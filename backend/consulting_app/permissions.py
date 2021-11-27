@@ -1,4 +1,8 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
+
+class PatientPermission(IsAuthenticated):
+    def has_permission(self, request, view):
+        return super().has_permission(request, view)
 
 class DoctorPermission(BasePermission):
     def has_permission(self, request, view):

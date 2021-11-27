@@ -125,6 +125,6 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 class ImageSerializer(ModelSerializer): ...
 
-class NationalitySerializer(ModelSerializer):
-    class Meta:
-        model = 
+# class NationalitySerializer(ModelSerializer):
+#     class Meta:
+#         model = 

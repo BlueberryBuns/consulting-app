@@ -22,6 +22,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from core.urls import urlpatterns as core_patterns
+from chat.urls import urlpatterns as chat_patterns
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -41,5 +42,6 @@ urlpatterns = [
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    *[item for item in core_patterns],
+    *[core_url for core_url in core_patterns],
+    *[chat_url for chat_url in chat_patterns],
 ]
