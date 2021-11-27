@@ -4,6 +4,12 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth import get_user_model
 
+from core.models import (
+    Doctor,
+    Nationality,
+    Specialization,
+)
+
 __all__ = ("UserSerializer", "LoginSerializer")
 
 
@@ -63,7 +69,7 @@ class UserSerializer(ModelSerializer):
         return attrs
 
 
-class ModeratorSerializer(UserSerializer):
+class ModeratorUserSerializer(UserSerializer):
     def create(self, validated_data: dict):
         user_data = {
             key: val
@@ -78,7 +84,7 @@ class ModeratorSerializer(UserSerializer):
         return instance
 
 
-class DoctorSerializer(UserSerializer):
+class DoctorUserSerializer(UserSerializer):
     def create(self, validated_data: dict):
         user_data = {
             key: val
@@ -91,6 +97,12 @@ class DoctorSerializer(UserSerializer):
 
         instance = self.Meta.model.objects.create_doctor(**user_data)
         return instance
+        
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def get_value(self, dictionary):
+        return super().get_value(dictionary)
 
 
 class LoginSerializer(TokenObtainPairSerializer):
@@ -112,3 +124,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         return data
 
 class ImageSerializer(ModelSerializer): ...
+
+class NationalitySerializer(ModelSerializer):
+    class Meta:
+        model = 

@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from .views import SignUpAPIView, LoginAPIView, CreateDoctorAPIView, CreateModeratorAPIView
 
-endpoint_name = "users"
+endpoint_name = "api"
 
 urlpatterns = [
     path(f"{endpoint_name}/register", SignUpAPIView.as_view(), name="register"),

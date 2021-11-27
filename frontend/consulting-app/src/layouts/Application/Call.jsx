@@ -8,6 +8,7 @@ import initialCameraSetup from "../../media-utils/base-config";
 
 import CameraPlayer from "../../components/CameraPlayer/CameraPlayer";
 import { Button, Card, Grid, Paper } from "@mui/material";
+import authAxios from "../../Auth/auth-axios";
 
 const CAMERA_CONFIG = { ...initialCameraSetup };
 
@@ -382,6 +383,25 @@ const CallView = () => {
             </Grid>
           </Grid>
         </Grid>
+        <Button
+          onClick={async () => {
+            try {
+              const res = await authAxios.post("/api/create/moderator", {
+                email: "moddd@user.com",
+                first_name: "b",
+                middle_names: "b",
+                last_name: "b",
+                password: "user",
+                password_confirmation: "user",
+              });
+              console.log(res);
+            } catch (err) {
+              console.log(err);
+            }
+          }}
+        >
+          Click me
+        </Button>
       </main>
     </>
   );

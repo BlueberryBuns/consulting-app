@@ -1,45 +1,51 @@
-from rest_framework import response
 import rest_framework.request as req
-from rest_framework_simplejwt import authentication
-from core.models import User
-from rest_framework.generics import GenericAPIView
-from core.serializers import UserSerializer, LoginSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import CreateAPIView
-# from rest_framework_simplejwt.authentication import JWTAuthentication, JWTTokenUserAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
+from core.models import User
+from core.serializers import (
+    UserSerializer,
+    LoginSerializer,
+    DoctorUserSerializer,
+    ModeratorUserSerializer
+)
+from consulting_app.permissions import (
+    DoctorPermission,
+    ModeratorPermission,
+    CustomIsAdminUser
+)
+
 
 class CreateModeratorAPIView(CreateAPIView):
-    serializer_class = UserSerializer
-    authentication_classes = [JWTAuthentication]
+    # Add custom permission classes
+    permission_classes = [CustomIsAdminUser]
+    serializer_class = ModeratorUserSerializer
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
 class CreateDoctorAPIView(CreateAPIView):
-    serializer_class = UserSerializer
+    permission_classes = [CustomIsAdminUser or ModeratorPermission]
+    serializer_class = DoctorUserSerializer
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
 class SignUpAPIView(CreateAPIView):
-    def post(self, request, *args, **kwargs):
-        print(request.data)
-        return super().post(request, *args, **kwargs)
-    authentication_classes = []
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny]
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        return super().post(request, *args, **kwargs)
+    
 
 class LoginAPIView(TokenObtainPairView):
     serializer_class = LoginSerializer
-    permission_classes = [AllowAny,]
-    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request: req, *args, **kwargs):
         res = super().post(request, *args, **kwargs)

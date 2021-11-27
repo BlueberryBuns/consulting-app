@@ -43,7 +43,7 @@ class CustomUserManager(BaseUserManager):
         if (user := kwargs.get("created_user")) is None:
             raise ValueError("Cannot create user properly, missing user object")
         user.is_staff = True
-        user.is_superuser = False
+        user.is_moderator = True
         user.role = Roles.objects.get(id=Roles._Roles.MODERATOR)
 
         return user
@@ -52,8 +52,7 @@ class CustomUserManager(BaseUserManager):
     def create_doctor(self, email: str= None, password: str = None, first_name: str = None, last_name: str = None, **kwargs):
         if (user := kwargs.get("created_user")) is None:
             raise ValueError("Cannot create user properly, missing user object")
-        user.is_staff = True
-        user.is_superuser = False
+        user.is_doctor = True
         user.role = Roles.objects.get(id=Roles._Roles.DOCTOR)
 
         return user
@@ -62,8 +61,6 @@ class CustomUserManager(BaseUserManager):
     def create_patient(self, email: str= None, password: str = None, first_name: str = None, last_name: str = None, **kwargs):
         if (user := kwargs.get("created_user")) is None:
             raise ValueError("Cannot create user properly, missing user object")
-        user.is_staff = True
-        user.is_superuser = False
         user.role = Roles.objects.get(id=Roles._Roles.PATIENT)
 
         return user
@@ -152,7 +149,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    is_moderator = models.BooleanField(_('moderator status'), default=False)
+    is_doctor = models.BooleanField(_('checks user doctor status'), default=False)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    
     objects = CustomUserManager()
     class Meta:
         verbose_name = _('user')

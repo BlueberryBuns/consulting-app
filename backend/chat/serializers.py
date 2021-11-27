@@ -11,19 +11,8 @@ class VisitSerializer(ModelSerializer):
         model = Visit
 
         fields = (
-            "id",
-            "patient_id",
-            "doctor_id"
+            "atendees",
+            "status",
+            "updated",
+            "visit_data",
         )
-
-        kwargs = {
-            "id": {"read_only": True},
-        }
-
-    def create(self, validated_data: dict):
-
-
-        return self.Meta.model(**validated_data)
-
-    def validate(self, attrs: dict) -> dict:
-        return super().validate(attrs)
