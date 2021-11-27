@@ -386,7 +386,9 @@ const CallView = () => {
         <Button
           onClick={async () => {
             try {
-              const res = await authAxios.get("/api/patient/visits");
+              const res = await authAxios.get(
+                "/api/patient/visits/2021-11-14/"
+              );
               console.log(res);
             } catch (err) {
               console.log(err);

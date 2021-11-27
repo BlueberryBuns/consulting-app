@@ -47,9 +47,7 @@ class UserSerializer(ModelSerializer):
                 "password_confirmation",
             ]
         }
-
-        instance = self.Meta.model.objects.create_patient(**user_data)
-        return instance
+        return self.Meta.model.objects.create_patient(**user_data)
 
     def validate(self, attrs: dict) -> dict:
         _password = attrs.get("password")
@@ -79,10 +77,7 @@ class ModeratorUserSerializer(UserSerializer):
                 "password_confirmation",
             ]
         }
-
-        instance = self.Meta.model.objects.create_moderator(**user_data)
-        return instance
-
+        return self.Meta.model.objects.create_moderator(**user_data)
 
 class DoctorUserSerializer(UserSerializer):
     def create(self, validated_data: dict):
@@ -94,9 +89,8 @@ class DoctorUserSerializer(UserSerializer):
                 "password_confirmation",
             ]
         }
+        return self.Meta.model.objects.create_doctor(**user_data)
 
-        instance = self.Meta.model.objects.create_doctor(**user_data)
-        return instance
         
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)

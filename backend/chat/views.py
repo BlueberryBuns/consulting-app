@@ -1,4 +1,5 @@
 from rest_framework.permissions import AllowAny
+from dateutil.parser import parse
 from rest_framework.generics import (
     CreateAPIView,
     GenericAPIView,
@@ -19,6 +20,7 @@ from consulting_app.permissions import (
 )
 
 from chat.models import Visit
+from core.models import Roles
 
 from .serializers import VisitSerializer
 
@@ -36,10 +38,14 @@ class VisitPatientAPIView(ListModelMixin,
     # queryset = Visit.objects.filter()
 
     def get(self, request, *args, **kwargs):
-        # queryset =
-        print(request.__dict__, "\nArgs: ", args, "\nkwargs: ", kwargs)
-        if kwargs.get("pk"):
+        self.queryset = Visit.objects.filter(atendees__in=[request.user.id])
+        print(args, kwargs, request.__dict__)
+        if kwargs.get("id"):
             return self.retrieve(request, *args, **kwargs)
+        if date_lookup := kwargs.get("datelookup"):
+            print("!!!!!!!!!!!!!!!DATELOOKUP", date_lookup)
+            date_lookup = parse(date_lookup)
+            self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
 
         return self.list(request, *args, **kwargs)
 
@@ -53,41 +59,41 @@ class VisitPatientAPIView(ListModelMixin,
         return self.partial_update(request, *args, **kwargs)
 
 
-# Classes providing functionality for Doctors
-class ListUpdateVisitDoctorAPIView(RetrieveUpdateAPIView):
-    # permission_classes = [DoctorPermission]
-    permission_classes = [AllowAny]
-    serializer_class = VisitSerializer
+# # Classes providing functionality for Doctors
+# class ListUpdateVisitDoctorAPIView(RetrieveUpdateAPIView):
+#     # permission_classes = [DoctorPermission]
+#     permission_classes = [AllowAny]
+#     serializer_class = VisitSerializer
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return super().get(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return super().put(request, *args, **kwargs)
+#     def put(self, request, *args, **kwargs):
+#         return super().put(request, *args, **kwargs)
 
-# Classes providing functionality for Moderators and Admins
-class CreateVisitsModAdminAPIView(CreateAPIView):
-    # permission_classes = [ModeratorPermission|CustomIsAdminUser]
-    permission_classes = [AllowAny]
-    serializer_class = VisitSerializer
+# # Classes providing functionality for Moderators and Admins
+# class CreateVisitsModAdminAPIView(CreateAPIView):
+#     # permission_classes = [ModeratorPermission|CustomIsAdminUser]
+#     permission_classes = [AllowAny]
+#     serializer_class = VisitSerializer
 
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+#     def create(self, request, *args, **kwargs):
+#         return super().create(request, *args, **kwargs)
 
 
-class RetrieveUpdateDestroyVisitsModAdminAPIView(RetrieveUpdateDestroyAPIView):
-    # permission_classes = [ModeratorPermission|CustomIsAdminUser]
-    permission_classes = [AllowAny]
-    serializer_class = VisitSerializer
+# class RetrieveUpdateDestroyVisitsModAdminAPIView(RetrieveUpdateDestroyAPIView):
+#     # permission_classes = [ModeratorPermission|CustomIsAdminUser]
+#     permission_classes = [AllowAny]
+#     serializer_class = VisitSerializer
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return super().get(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return super().put(request, *args, **kwargs)
+#     def put(self, request, *args, **kwargs):
+#         return super().put(request, *args, **kwargs)
 
-    def patch(self, request, *args, **kwargs):
-        return super().patch(request, *args, **kwargs)
+#     def patch(self, request, *args, **kwargs):
+#         return super().patch(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
+#     def delete(self, request, *args, **kwargs):
+#         return super().delete(request, *args, **kwargs)
