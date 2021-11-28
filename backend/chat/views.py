@@ -20,7 +20,6 @@ from consulting_app.permissions import (
 )
 
 from chat.models import Visit
-from core.models import Roles
 
 from .serializers import VisitSerializer
 
@@ -35,11 +34,9 @@ class VisitPatientAPIView(ListModelMixin,
     serializer_class = VisitSerializer
 
     queryset = Visit.objects.all()
-    # queryset = Visit.objects.filter()
 
     def get(self, request, *args, **kwargs):
         self.queryset = Visit.objects.filter(atendees__in=[request.user.id])
-        print(args, kwargs, request.__dict__)
         if kwargs.get("id"):
             return self.retrieve(request, *args, **kwargs)
         if date_lookup := kwargs.get("datelookup"):
@@ -49,6 +46,7 @@ class VisitPatientAPIView(ListModelMixin,
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        print(kwargs, args)
         return self.create(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):

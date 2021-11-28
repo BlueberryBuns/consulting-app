@@ -16,22 +16,20 @@ class ListVisitSerializer(ModelSerializer):
 class VisitSerializer(ModelSerializer):
     class Meta:
         model = Visit
-        fields = (
-            "atendees",
-            "visit_date",
-            "status",
-        )
+        fields = "__all__"
 
     def create(self, validated_data: dict) -> Visit:
-        return self.Meta.model.objects.create(**validated_data)
+        atendees = validated_data.pop("atendees")
+        instance = self.Meta.model.objects.create(**validated_data)
+        instance.atendees.set(atendees)
+
+        return instance
 
     def validate(self, attrs: dict) -> dict:
-        if atendees_list := attrs.get("atendees"):
-            assert len(atendees_list) == 2, "System currently support only two atendees"
+        if status := attrs.get("status"):
+            assert status in ["CANCELED", "ORDERED"], "Patient tried to set prohibited status"
+        if atendees := attrs.get("atendees"):
+            assert len(atendees) == 2, "System currently support only two atendees"
         if date := attrs.get("visit_date"):
-            print(type(date))
-            assert datetime.now(tz=tzutc()) >= parse_date(date), \
-                "Future visits do not belong in the past"
+            assert datetime.now(tz=tzutc()) <= date, "Cannot set visit in the past"
         return attrs
-
-    # def 

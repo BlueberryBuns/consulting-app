@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 class Visit(models.Model):
 
     class _Status(models.TextChoices):
-        PENDING = "PENDING", _("PENDING")
+        ORDERED = "ORDERED", _("ORDERED")
         CONFIRMED = "CONFIRMED", _("CONFIRMED")
         CANCELED = "CANCELED", _("CANCELED")
         STARTED = "STARTED", _("STARTED")
@@ -20,7 +20,7 @@ class Visit(models.Model):
 
     id = models.UUIDField(primary_key=True, editable=False ,default=uuid.uuid4)
     secret = models.CharField(max_length=128, default=create_hash, blank=False, null=False, editable=False, auto_created=True)
-    status = models.CharField(choices=_Status.choices, default=_Status.PENDING, max_length=10, auto_created=True)
+    status = models.CharField(choices=_Status.choices, default=_Status.ORDERED, max_length=10, auto_created=True)
     creation_date = models.DateTimeField(auto_now_add=True, null=False, blank=False, editable=False)
     updated = models.DateTimeField(auto_now=True, blank=False, null=False)
     atendees = models.ManyToManyField(User)
