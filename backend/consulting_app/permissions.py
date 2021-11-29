@@ -6,12 +6,18 @@ class PatientPermission(IsAuthenticated):
 
 class DoctorPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_doctor)
+        if hasattr(request.user,"is_doctor"):
+            return bool(request.user and request.user.is_doctor)
+        return False
 
 class ModeratorPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_moderator)
+        if hasattr(request.user,"is_moderator"):
+            return bool(request.user and request.user.is_moderator)
+        return False
 
 class AdminPermission(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_superuser)
+        if hasattr(request.user,"is_superuser"):
+            return bool(request.user and request.user.is_superuser)
+        return False

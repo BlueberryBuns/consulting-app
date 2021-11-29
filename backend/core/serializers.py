@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, models
 
 from core.models import (
     Doctor,
@@ -16,8 +16,12 @@ __all__ = ("UserSerializer", "LoginSerializer")
 class UserSerializer(ModelSerializer):
     password = serializers.CharField(
         write_only=True,
+        style={'input_type': 'password'}
     )
-    password_confirmation = serializers.CharField(write_only=True)
+    password_confirmation = serializers.CharField(
+        write_only=True,
+        style={'input_type': 'password'}
+    )
 
     class Meta:
         model = get_user_model()
@@ -80,6 +84,28 @@ class ModeratorUserSerializer(UserSerializer):
         return self.Meta.model.objects.create_moderator(**user_data)
 
 class DoctorUserSerializer(UserSerializer):
+    specializations = serializers.ListField(allow_empty=False,)
+    academic_title = serializers.CharField()
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "middle_names",
+            "last_name",
+            "password",
+            "password_confirmation",
+            "specializations",
+            "academic_title"
+        )
+
+        kwargs = {
+            "id": {"read_only": True},
+            "password": {"write_only": True},
+            "password_confirmation": {"write_only": True},
+        }
     def create(self, validated_data: dict):
         user_data = {
             key: val
@@ -89,9 +115,16 @@ class DoctorUserSerializer(UserSerializer):
                 "password_confirmation",
             ]
         }
-        return self.Meta.model.objects.create_doctor(**user_data)
+        instance =  self.Meta.model.objects.create_doctor(**user_data)
 
-        
+        return instance
+
+    def validate(self, attrs: dict) -> dict:
+        attrs = super().validate(attrs)
+        if title := attrs.get("academic_title"):
+            assert title in Doctor._Titles.choices, "Unknown doctor title"
+        return attrs
+
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
 
@@ -119,6 +152,44 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 class ImageSerializer(ModelSerializer): ...
 
-# class NationalitySerializer(ModelSerializer):
-#     class Meta:
-#         model = 
+class NationalitySerializer(ModelSerializer):
+    class Meta:
+        model = Nationality
+        fields = "__all__"
+
+class DoctorSerializer(ModelSerializer):
+    user_id = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Doctor
+        fields = "__all__"
+
+    def create(self, validated_data: dict) -> Doctor:
+        specializations = validated_data.pop("specializations")
+        instance = self.Meta.model.objects.create(**validated_data)
+        instance.specializations.set(specializations)
+        user = validated_data.get("user")
+        print(user.__dict__)
+        if user.doctors_id is not None:
+            raise ValueError("User already set as doctor")
+        user.is_doctor = True
+        user.doctors_id = instance
+        user.save()
+        return instance
+
+    def validate(self, attrs):
+        if title := attrs.get("academic_title"):
+            assert title in Doctor._Titles.choices, "Unknown doctor title"
+        if uid := attrs["user_id"]:
+            user = get_user_model().objects.get(id=uid)
+            print(user)
+            attrs["user"] = user
+        else:
+            raise ValueError("UserID was not provided")
+        return attrs
+
+
+class SpecializationSerializer(ModelSerializer):
+    class Meta:
+        model = Specialization
+        fields = "__all__"

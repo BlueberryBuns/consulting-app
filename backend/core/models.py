@@ -96,12 +96,15 @@ class Nationality(models.Model):
     
 
 class Specialization(models.Model):
+    class Meta:
+        verbose_name = "Specialization"
     specialization = models.CharField(max_length=35, blank=False, null=False)
 
 
 class Doctor(models.Model):
     class _Titles(models.TextChoices):
         UNKNOWN = "", ""
+        MGR = "mgr.", "mgr."
         LEK_MED = "lek. med.", "lek. med."
         LEK_DENT = "lek. dent.", "lek. dent."
         DR_N_MED = "dr n. med.", "dr n. med."
