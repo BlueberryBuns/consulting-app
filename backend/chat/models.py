@@ -27,4 +27,4 @@ class Visit(models.Model):
     visit_date = models.DateTimeField(blank=False, null=False)
     
     def __str__(self):
-        return f"{self.visit_date}-{self.id}"
+        return f"{self.visit_date}---{self.id}"

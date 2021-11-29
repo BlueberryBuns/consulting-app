@@ -17,7 +17,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin
 )
 from consulting_app.permissions import (
-    CustomIsAdminUser,
+    AdminPermission,
     PatientPermission,
     DoctorPermission,
     ModeratorPermission,
@@ -146,7 +146,7 @@ class VisitModeratorAPIView(ListModelMixin,
                             RetrieveModelMixin,
                             CreateModelMixin,
                             GenericAPIView):
-    # permission_classes = [DoctorPermission]
+    # permission_classes = [ModeratorPermission]
     permission_classes = [AllowAny]
     serializer_class = VisitSerializer
 
@@ -170,4 +170,4 @@ class VisitModeratorAPIView(ListModelMixin,
 
 
 class VisitAdminAPIView(VisitModeratorAPIView):
-    permission_classes = [CustomIsAdminUser]
+    permission_classes = [AdminPermission]
