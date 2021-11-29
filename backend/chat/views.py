@@ -1,5 +1,9 @@
+import functools
+import json
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from dateutil.parser import parse
+from django.core.exceptions import SuspiciousOperation
 from rest_framework.generics import (
     CreateAPIView,
     GenericAPIView,
@@ -19,9 +23,10 @@ from consulting_app.permissions import (
     ModeratorPermission,
 )
 
-from chat.models import Visit
-
+from .models import Visit
 from .serializers import VisitSerializer
+from .utils import ParametrizedRetriveValidator
+
 
 # Classes providing functionality for Patients
 class VisitPatientAPIView(ListModelMixin,
@@ -35,19 +40,117 @@ class VisitPatientAPIView(ListModelMixin,
 
     queryset = Visit.objects.all()
 
-    def get(self, request, *args, **kwargs):
-        self.queryset = Visit.objects.filter(atendees__in=[request.user.id])
-        if kwargs.get("id"):
-            return self.retrieve(request, *args, **kwargs)
-        if date_lookup := kwargs.get("datelookup"):
-            date_lookup = parse(date_lookup)
-            self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
+    def validateUpdate(func):
+        @functools.wraps(func)
+        def wrapping_function(*args, **kwargs):
+            args[0].queryset = Visit.objects.filter(atendees__in=[args[1].user.id])
+            if args[1].data.get("atendees"):
+                return Response(
+                    {"message":"Patients cannot change meeting atendees",},
+                    status=419,
+                    exception=SuspiciousOperation(
+                        f"Patient {args[1].user.id} tried to change atendees"
+                    )
+                )
+            if status := args[1].data.get("status"):
+                if status not in ["CANCELED", "ORDERED"]:
+                    return Response(
+                        {"message":"Invalid meeting status set by patient",},
+                        status=421,
+                        exception=SuspiciousOperation(
+                            f"Invalid status: {status} set by patient {args[1].user.id}"
+                        )
+                    )
+            if args[1].data.get("visit_date"):
+                return Response(
+                        {"message": "Patient cannot change date of meeting",},
+                        status=422,
+                        exception=SuspiciousOperation(
+                            f"Patient: {args[1].user.id} tried changing visit date"
+                        )
+                    )
+            return func(*args, **kwargs)
+        return wrapping_function
 
+    @validateUpdate
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @validateUpdate
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @ParametrizedRetriveValidator(role="Patient", error_code=423, model=Visit)
+    def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        print(kwargs, args)
+        if str(request.user.id) not in request.data["atendees"]:
+            raise SuspiciousOperation("Patients cannot organize meeting for other users")
         return self.create(request, *args, **kwargs)
+
+
+
+# Classes providing functionality for Doctors
+class VisitDoctorAPIView(ListModelMixin,
+                            CreateModelMixin,
+                            UpdateModelMixin,
+                            RetrieveModelMixin,
+                            GenericAPIView):
+    # permission_classes = [ModeratorPermission]
+    permission_classes = [AllowAny]
+    serializer_class = VisitSerializer
+
+    queryset = Visit.objects.all()
+
+    def validateUpdate(func):
+        @functools.wraps(func)
+        def wrapping_function(*args, **kwargs):
+            args[0].queryset = Visit.objects.filter(atendees__in=[args[1].user.id])
+            if atendees := args[1].data.get("atendees"):
+                if args[1].user.id not in atendees:
+                    return Response(
+                        {"message":"Requesting user does not appear in atendees",},
+                        status=430,
+                        exception=SuspiciousOperation(
+                            f"Invalid operation: user {args[1].user.id} not in atendees"
+                        )
+                    )
+            if status := args[1].data.get("status"):
+                if status not in ["CANCELED", "CONFIRMED", "STARTED", "FINISHED"]:
+                    return Response(
+                        {"message":"Invalid meeting status set by doctor",},
+                        status=431,
+                        exception=SuspiciousOperation(
+                            f"Invalid status: {status} set by doctor {args[1].user.id}"
+                        )
+                    )
+            return func(*args, **kwargs)
+        return wrapping_function
+
+    @validateUpdate
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @validateUpdate
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @ParametrizedRetriveValidator(role="Patient", error_code=432, model=Visit)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class VisitModeratorAPIView(ListModelMixin,
+                            UpdateModelMixin,
+                            RetrieveModelMixin,
+                            CreateModelMixin,
+                            GenericAPIView):
+    # permission_classes = [DoctorPermission]
+    permission_classes = [AllowAny]
+    serializer_class = VisitSerializer
+
+    queryset = Visit.objects.all()
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -55,42 +158,16 @@ class VisitPatientAPIView(ListModelMixin,
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        if date_lookup := kwargs.pop("datelookup"):
+            self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
+        if user_id := kwargs.pop("userid"):
+            self.queryset = Visit.objects.filter(atendees__in=[user_id])
+        return self.list(request, *args, **kwargs)
 
-# # Classes providing functionality for Doctors
-# class ListUpdateVisitDoctorAPIView(RetrieveUpdateAPIView):
-#     # permission_classes = [DoctorPermission]
-#     permission_classes = [AllowAny]
-#     serializer_class = VisitSerializer
-
-#     def get(self, request, *args, **kwargs):
-#         return super().get(request, *args, **kwargs)
-
-#     def put(self, request, *args, **kwargs):
-#         return super().put(request, *args, **kwargs)
-
-# # Classes providing functionality for Moderators and Admins
-# class CreateVisitsModAdminAPIView(CreateAPIView):
-#     # permission_classes = [ModeratorPermission|CustomIsAdminUser]
-#     permission_classes = [AllowAny]
-#     serializer_class = VisitSerializer
-
-#     def create(self, request, *args, **kwargs):
-#         return super().create(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-# class RetrieveUpdateDestroyVisitsModAdminAPIView(RetrieveUpdateDestroyAPIView):
-#     # permission_classes = [ModeratorPermission|CustomIsAdminUser]
-#     permission_classes = [AllowAny]
-#     serializer_class = VisitSerializer
-
-#     def get(self, request, *args, **kwargs):
-#         return super().get(request, *args, **kwargs)
-
-#     def put(self, request, *args, **kwargs):
-#         return super().put(request, *args, **kwargs)
-
-#     def patch(self, request, *args, **kwargs):
-#         return super().patch(request, *args, **kwargs)
-
-#     def delete(self, request, *args, **kwargs):
-#         return super().delete(request, *args, **kwargs)
+class VisitAdminAPIView(VisitModeratorAPIView):
+    permission_classes = [CustomIsAdminUser]

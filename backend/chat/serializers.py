@@ -22,14 +22,14 @@ class VisitSerializer(ModelSerializer):
         atendees = validated_data.pop("atendees")
         instance = self.Meta.model.objects.create(**validated_data)
         instance.atendees.set(atendees)
-
         return instance
 
     def validate(self, attrs: dict) -> dict:
-        if status := attrs.get("status"):
-            assert status in ["CANCELED", "ORDERED"], "Patient tried to set prohibited status"
         if atendees := attrs.get("atendees"):
             assert len(atendees) == 2, "System currently support only two atendees"
         if date := attrs.get("visit_date"):
             assert datetime.now(tz=tzutc()) <= date, "Cannot set visit in the past"
         return attrs
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
