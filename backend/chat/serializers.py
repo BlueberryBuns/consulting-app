@@ -14,6 +14,7 @@ class ListVisitSerializer(ModelSerializer):
         fields = "__all__"
 
 class VisitSerializer(ModelSerializer):
+
     class Meta:
         model = Visit
         fields = "__all__"

@@ -1,8 +1,14 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import User
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
+from .models import (
+    User,
+    Doctor,
+    Specialization,
+    Nationality,
+    Roles,
+)
 
 
 # class SuperUser(DefaultUserAdmin):
@@ -10,3 +16,7 @@ from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 
 admin.site.register(User)
+admin.site.register(Doctor)
+admin.site.register(Specialization)
+admin.site.register(Nationality)
+admin.site.register(Roles)

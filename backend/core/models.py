@@ -100,6 +100,9 @@ class Specialization(models.Model):
         verbose_name = "Specialization"
     specialization = models.CharField(max_length=35, blank=False, null=False)
 
+    def __str__(self):
+        return self.specialization
+
 
 class Doctor(models.Model):
     class _Titles(models.TextChoices):
@@ -115,7 +118,7 @@ class Doctor(models.Model):
     academic_title = models.TextField(choices=_Titles.choices, default=_Titles.UNKNOWN)
 
     def __str__(self):
-        return self.specialization
+        return "Doctor"
 
 class User(AbstractBaseUser, PermissionsMixin):
 

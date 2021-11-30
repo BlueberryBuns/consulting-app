@@ -102,6 +102,16 @@ DATABASES = {
 
 REDIS = os.getenv("REDIS", "redis://localhost:6379")
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS,
+        "OPTIONS": {
+            "django_redis.client.DefaultClient"
+        },
+    }
+}
+
 CHANNEL_LAYERS = {
     "default":{
         "BACKEND": "channels_redis.core.RedisChannelLayer",
