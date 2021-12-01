@@ -17,7 +17,7 @@ urlpatterns = [
         ListVisitPatientDoctorAPIView.as_view()),
     path(f"{endpoint_name}/patient/visits/id/<slug:pk>/",
         ListVisitPatientDoctorAPIView.as_view()),
-    path(f"{endpoint_name}/patient/visits/list/<slug:pk>/",
+    path(f"{endpoint_name}/patient/visits/update/<slug:pk>/",
         VisitPatientAPIView.as_view()),
     path(f"{endpoint_name}/patient/visits/create/",
         VisitPatientAPIView.as_view()),
@@ -29,7 +29,7 @@ urlpatterns = [
         ListVisitPatientDoctorAPIView.as_view()),
     path(f"{endpoint_name}/doctor/visits/list",
         VisitDoctorAPIView.as_view()),
-    path(f"{endpoint_name}/doctor/visits/id/<slug:pk>/",
+    path(f"{endpoint_name}/doctor/visits/update/<slug:pk>/",
         VisitDoctorAPIView.as_view()),
 
     # Moderator is finished, TESTED

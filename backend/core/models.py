@@ -155,8 +155,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    is_patient = models.BooleanField(_('patient status'), default=True, editable=False)
     is_moderator = models.BooleanField(_('moderator status'), default=False)
-    is_doctor = models.BooleanField(_('checks user doctor status'), default=False)
+    is_doctor = models.BooleanField(_('doctor status'), default=False)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     
     objects = CustomUserManager()

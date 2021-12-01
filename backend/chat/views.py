@@ -39,7 +39,7 @@ from .utils import ParametrizedRetriveValidator
 class ListVisitPatientDoctorAPIView(RetrieveModelMixin,
                                 ListModelMixin,
                                 GenericAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [PatientPermission]
     serializer_class = SafeListVisitSerializer
 
     @ParametrizedRetriveValidator(role="Patient", error_code=423, model=Visit)
