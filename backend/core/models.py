@@ -118,7 +118,7 @@ class Doctor(models.Model):
     academic_title = models.TextField(choices=_Titles.choices, default=_Titles.UNKNOWN)
 
     def __str__(self):
-        return "Doctor"
+        return f"Doctor{self.id}"
 
 class User(AbstractBaseUser, PermissionsMixin):
 

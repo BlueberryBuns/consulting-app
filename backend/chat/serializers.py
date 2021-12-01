@@ -1,29 +1,60 @@
 from datetime import datetime
-from dateutil.parser import parse as parse_date
 from dateutil.tz import tzutc
-from django.db.models import fields
-from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-
+from core.serializers import ListUsersSerializer, SafeUserSerializer
 from chat.models import Visit
-from core.models import User
 
-class ListVisitSerializer(ModelSerializer):
-    class Meta:
-        model = Visit,
-        fields = "__all__"
+class SafeListVisitSerializer(ModelSerializer):
 
-class VisitSerializer(ModelSerializer):
+    atendees = SafeUserSerializer(many=True)
 
     class Meta:
         model = Visit
-        fields = "__all__"
+        fields = (
+            "id",
+            "status",
+            "secret",
+            "creation_date",
+            "updated",
+            "visit_date",
+            "atendees",
+        )
+
+class UnsafeListVisitSerializer(ModelSerializer):
+
+    atendees = ListUsersSerializer(many=True)
+
+    class Meta:
+        model = Visit
+        fields = (
+            "id",
+            "status",
+            "secret",
+            "creation_date",
+            "updated",
+            "visit_date",
+            "atendees",
+        )
+
+class StandardVisitSerializer(ModelSerializer):
+
+    class Meta:
+        model = Visit
+        fields = (
+            "id",
+            "status",
+            "secret",
+            "creation_date",
+            "updated",
+            "visit_date",
+            "atendees",
+        )
 
     def create(self, validated_data: dict) -> Visit:
         atendees = validated_data.pop("atendees")
-        instance = self.Meta.model.objects.create(**validated_data)
-        instance.atendees.set(atendees)
-        return instance
+        visit = self.Meta.model.objects.create(**validated_data)
+        visit.atendees.set(atendees)
+        return visit
 
     def validate(self, attrs: dict) -> dict:
         if atendees := attrs.get("atendees"):

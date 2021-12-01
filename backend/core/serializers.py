@@ -17,7 +17,7 @@ __all__ = ("UserSerializer", "LoginSerializer")
 class SpecializationSerializer(ModelSerializer):
     class Meta:
         model = Specialization
-        fields = tuple(["specialization",])
+        fields = ("specialization",)
 
 
 class ListUsersSerializer(ModelSerializer):
@@ -129,6 +129,17 @@ class DoctorSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
+            "first_name",
+            "last_name",
+            "doctors_id",
+        )
+
+class SafeUserSerializer(ModelSerializer):
+    doctors_id = DocSerializer(many=False, required=False)
+    class Meta:
+        model = get_user_model()
+        fields = (
+            "id",
             "first_name",
             "last_name",
             "doctors_id",

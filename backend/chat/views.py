@@ -1,8 +1,11 @@
+from datetime import date
+import time
 import functools
 import json
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from dateutil.parser import parse
+from datetime import datetime
 from django.core.exceptions import SuspiciousOperation
 from rest_framework.generics import (
     CreateAPIView,
@@ -24,19 +27,35 @@ from consulting_app.permissions import (
 )
 
 from .models import Visit
-from .serializers import VisitSerializer
+from .serializers import (
+    StandardVisitSerializer,
+    SafeListVisitSerializer,
+    UnsafeListVisitSerializer,
+)
+
 from .utils import ParametrizedRetriveValidator
 
 
-# Classes providing functionality for Patients
-class VisitPatientAPIView(ListModelMixin,
-                            CreateModelMixin,
+class ListVisitPatientDoctorAPIView(RetrieveModelMixin,
+                                ListModelMixin,
+                                GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = SafeListVisitSerializer
+
+    @ParametrizedRetriveValidator(role="Patient", error_code=423, model=Visit)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+class VisitPatientAPIView(CreateModelMixin,
                             UpdateModelMixin,
                             RetrieveModelMixin,
+                            ListModelMixin,
                             GenericAPIView):
-    # permission_classes = [PatientPermission]
-    permission_classes = [AllowAny]
-    serializer_class = VisitSerializer
+    
+    '''Class providing functionality for Patients'''
+    
+    permission_classes = [PatientPermission]
+    serializer_class = StandardVisitSerializer
 
     queryset = Visit.objects.all()
 
@@ -53,7 +72,7 @@ class VisitPatientAPIView(ListModelMixin,
                     )
                 )
             if status := args[1].data.get("status"):
-                if status not in ["CANCELED", "ORDERED"]:
+                if status not in ["CANCELED"]:
                     return Response(
                         {"message":"Invalid meeting status set by patient",},
                         status=421,
@@ -85,21 +104,36 @@ class VisitPatientAPIView(ListModelMixin,
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        if str(request.user.id) not in request.data["atendees"]:
-            raise SuspiciousOperation("Patients cannot organize meeting for other users")
+        d = request.data
+        if d.get("status"):
+            return Response(
+                    {"message": "Invalid data",},
+                    status=400,
+                    exception=SuspiciousOperation(
+                        f"Patient: {request.user.id} tried to self confirm visit"
+                    )
+                )
+        if str(request.user.id) not in [usr for usr in request.data["atendees"]]:
+            return Response(
+                    {"message": "Invalid data",},
+                    status=400,
+                    exception=SuspiciousOperation(
+                        f"Patient: {request.user.id} tred to organise vsit for other users"
+                    )
+                )
         return self.create(request, *args, **kwargs)
 
 
-
-# Classes providing functionality for Doctors
 class VisitDoctorAPIView(ListModelMixin,
                             CreateModelMixin,
                             UpdateModelMixin,
                             RetrieveModelMixin,
                             GenericAPIView):
-    # permission_classes = [ModeratorPermission]
-    permission_classes = [AllowAny]
-    serializer_class = VisitSerializer
+
+    '''Classes providing functionality for Doctors'''
+
+    permission_classes = [DoctorPermission]
+    serializer_class = StandardVisitSerializer
 
     queryset = Visit.objects.all()
 
@@ -141,14 +175,33 @@ class VisitDoctorAPIView(ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 
-class VisitModeratorAPIView(ListModelMixin,
+class VisitAPIView(ListModelMixin,
+                    RetrieveModelMixin,
+                    GenericAPIView):
+    permission_classes = [ModeratorPermission|AdminPermission]
+    serializer_class = UnsafeListVisitSerializer
+
+    queryset = Visit.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        if kwargs.get("pk"):
+            return self.retrieve(request, *args, **kwargs)
+        if date_lookup := request.data.pop("datelookup", None):
+            date_lookup = parse(date_lookup)
+            self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
+        if date_lookdown := request.data.pop("datelookdown", None):
+            date_lookdown = parse(date_lookdown)
+            self.queryset = self.queryset.filter(visit_date__lte=date_lookdown)
+        if user_id := request.data.pop("user_id", None):
+            self.queryset = Visit.objects.filter(atendees__in=[user_id])
+        return self.list(request, *args, **kwargs)
+
+
+class VisitModeratorAPIView(VisitAPIView,
                             UpdateModelMixin,
-                            RetrieveModelMixin,
-                            CreateModelMixin,
-                            GenericAPIView):
-    # permission_classes = [ModeratorPermission]
-    permission_classes = [AllowAny]
-    serializer_class = VisitSerializer
+                            CreateModelMixin):
+    permission_classes = [ModeratorPermission]
+    serializer_class = StandardVisitSerializer
 
     queryset = Visit.objects.all()
 
@@ -157,13 +210,6 @@ class VisitModeratorAPIView(ListModelMixin,
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        if date_lookup := kwargs.pop("datelookup"):
-            self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
-        if user_id := kwargs.pop("userid"):
-            self.queryset = Visit.objects.filter(atendees__in=[user_id])
-        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)

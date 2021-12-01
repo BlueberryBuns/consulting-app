@@ -23,7 +23,6 @@ urlpatterns = [
     path(f"{endpoint_name}/token/verify", TokenVerifyView.as_view(), name="verify"),
 
     path(f"{endpoint_name}/accounts/get", ListUsersAPIView.as_view()),
-    path(f"{endpoint_name}/get", GetDocsAPIView.as_view()),
     path(f"{endpoint_name}/doctors/get", GetDoctorsAPIView.as_view()),
 
 
