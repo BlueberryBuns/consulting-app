@@ -6,7 +6,7 @@ import { Redirect } from "react-router";
 
 const loginHandler = async (email, password) => {
   console.log("Sent user login data");
-  const res = await authAxios.post("/users/login", {
+  const res = await authAxios.post("/api/login", {
     email: email,
     password: password,
   });
@@ -22,7 +22,7 @@ const registerHandler = async (
   lastName
 ) => {
   console.log("Sent register data");
-  const response = await authAxios.post("/users/register", {
+  const response = await authAxios.post("/api/register", {
     email: email,
     password: password,
     password_confirmation: confirmPassword,
