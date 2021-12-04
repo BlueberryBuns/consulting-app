@@ -16,10 +16,8 @@ def receive_user_from_db(scope):
     print("Receiving data from database")
     close_old_connections()
     url_query = parse_querystring(scope["query_string"].decode())
-    # logger.warning(f"[{logger.name.upper()}]: URL query: {url_query}")
     token = url_query.get('token')
     if token is None:
-        logger.warning(f"[{logger.name.upper()}]:Token is missing!!!!!!!!!!!!!!!!!!!!!1")
         return Guest()
     try:
         access = AccessToken(token[0])

@@ -1,0 +1,400 @@
+- model: core.Specialization
+  pk: 1
+  fields:
+    specialization: ginekolog
+- model: core.Specialization
+  pk: 2
+  fields:
+    specialization: psycholog
+- model: core.Specialization
+  pk: 3
+  fields:
+    specialization: stomatolog
+- model: core.Specialization
+  pk: 4
+  fields:
+    specialization: psychiatra
+- model: core.Specialization
+  pk: 5
+  fields:
+    specialization: ortopeda
+- model: core.Specialization
+  pk: 6
+  fields:
+    specialization: chirurg
+- model: core.Specialization
+  pk: 7
+  fields:
+    specialization: dermatolog
+- model: core.Specialization
+  pk: 8
+  fields:
+    specialization: laryngolog
+- model: core.Specialization
+  pk: 9
+  fields:
+    specialization: pediatra
+- model: core.Specialization
+  pk: 10
+  fields:
+    specialization: internista
+- model: core.Specialization
+  pk: 11
+  fields:
+    specialization: fizjoterapeuta
+- model: core.Specialization
+  pk: 12
+  fields:
+    specialization: neurolog
+- model: core.Specialization
+  pk: 13
+  fields:
+    specialization: endokrynolog
+- model: core.Specialization
+  pk: 14
+  fields:
+    specialization: okulista
+- model: core.Specialization
+  pk: 15
+  fields:
+    specialization: urolog
+- model: core.Specialization
+  pk: 16
+  fields:
+    specialization: kardiolog
+- model: core.Specialization
+  pk: 17
+  fields:
+    specialization: psychoterapeuta
+- model: core.Specialization
+  pk: 18
+  fields:
+    specialization: gastrolog
+- model: core.Specialization
+  pk: 19
+  fields:
+    specialization: neurochirurg
+- model: core.Specialization
+  pk: 20
+  fields:
+    specialization: lekarz rodzinny
+- model: core.Specialization
+  pk: 21
+  fields:
+    specialization: radiolog
+- model: core.Specialization
+  pk: 22
+  fields:
+    specialization: dietetyk
+- model: core.Specialization
+  pk: 23
+  fields:
+    specialization: alergolog
+- model: core.Specialization
+  pk: 24
+  fields:
+    specialization: onkolog
+- model: core.Specialization
+  pk: 25
+  fields:
+    specialization: pulmonolog
+- model: core.Specialization
+  pk: 26
+  fields:
+    specialization: diabetolog
+- model: core.Specialization
+  pk: 27
+  fields:
+    specialization: specjalista medycyny estetycznej
+- model: core.Specialization
+  pk: 28
+  fields:
+    specialization: reumatolog
+- model: core.Specialization
+  pk: 29
+  fields:
+    specialization: ortodonta
+- model: core.Specialization
+  pk: 30
+  fields:
+    specialization: chirurg plastyczny
+- model: core.Specialization
+  pk: 31
+  fields:
+    specialization: chirurg naczyniowy
+- model: core.Specialization
+  pk: 32
+  fields:
+    specialization: hematolog
+- model: core.Specialization
+  pk: 33
+  fields:
+    specialization: proktolog
+- model: core.Specialization
+  pk: 34
+  fields:
+    specialization: neurolog dziecięcy
+- model: core.Specialization
+  pk: 35
+  fields:
+    specialization: logopeda
+- model: core.Specialization
+  pk: 36
+  fields:
+    specialization: lekarz w trakcie specjalizacji
+- model: core.Specialization
+  pk: 37
+  fields:
+    specialization: weterynarz
+- model: core.Specialization
+  pk: 38
+  fields:
+    specialization: lekarz medycyny pracy
+- model: core.Specialization
+  pk: 39
+  fields:
+    specialization: seksuolog
+- model: core.Specialization
+  pk: 40
+  fields:
+    specialization: nefrolog
+- model: core.Specialization
+  pk: 41
+  fields:
+    specialization: osteopata
+- model: core.Specialization
+  pk: 42
+  fields:
+    specialization: immunolog
+- model: core.Specialization
+  pk: 43
+  fields:
+    specialization: ortopeda dziecięcy
+- model: core.Specialization
+  pk: 44
+  fields:
+    specialization: psychiatra dziecięcy
+- model: core.Specialization
+  pk: 45
+  fields:
+    specialization: chirurg dziecięcy
+- model: core.Specialization
+  pk: 46
+  fields:
+    specialization: anestezjolog
+- model: core.Specialization
+  pk: 47
+  fields:
+    specialization: laryngolog dziecięcy
+- model: core.Specialization
+  pk: 48
+  fields:
+    specialization: lekarz chorób zakaźnych
+- model: core.Specialization
+  pk: 49
+  fields:
+    specialization: psycholog dziecięcy
+- model: core.Specialization
+  pk: 50
+  fields:
+    specialization: chirurg szczękowo-twarzowy
+- model: core.Specialization
+  pk: 51
+  fields:
+    specialization: kardiolog dziecięcy
+- model: core.Specialization
+  pk: 52
+  fields:
+    specialization: diagnostyk
+- model: core.Specialization
+  pk: 53
+  fields:
+    specialization: gastrolog dziecięcy
+- model: core.Specialization
+  pk: 54
+  fields:
+    specialization: położna/położny
+- model: core.Specialization
+  pk: 55
+  fields:
+    specialization: chirurg stomatologiczny
+- model: core.Specialization
+  pk: 56
+  fields:
+    specialization: urolog dziecięcy
+- model: core.Specialization
+  pk: 57
+  fields:
+    specialization: flebolog
+- model: core.Specialization
+  pk: 58
+  fields:
+    specialization: lekarz rehabilitacji medycznej
+- model: core.Specialization
+  pk: 59
+  fields:
+    specialization: optometrysta
+- model: core.Specialization
+  pk: 60
+  fields:
+    specialization: audiolog,foniatra
+- model: core.Specialization
+  pk: 61
+  fields:
+    specialization: androlog
+- model: core.Specialization
+  pk: 62
+  fields:
+    specialization: kardiochirurg
+- model: core.Specialization
+  pk: 63
+  fields:
+    specialization: endokrynolog dziecięcy
+- model: core.Specialization
+  pk: 64
+  fields:
+    specialization: ultrasonografista
+- model: core.Specialization
+  pk: 65
+  fields:
+    specialization: hepatolog
+- model: core.Specialization
+  pk: 66
+  fields:
+    specialization: okulista dziecięcy
+- model: core.Specialization
+  pk: 67
+  fields:
+    specialization: geriatra
+- model: core.Specialization
+  pk: 68
+  fields:
+    specialization: genetyk
+- model: core.Specialization
+  pk: 69
+  fields:
+    specialization: fizjoterapeuta dziecięcy
+- model: core.Specialization
+  pk: 70
+  fields:
+    specialization: lekarz sportowy
+- model: core.Specialization
+  pk: 71
+  fields:
+    specialization: angiolog
+- model: core.Specialization
+  pk: 72
+  fields:
+    specialization: CovidTest
+- model: core.Specialization
+  pk: 73
+  fields:
+    specialization: protetyk
+- model: core.Specialization
+  pk: 74
+  fields:
+    specialization: stomatolog dziecięcy
+- model: core.Specialization
+  pk: 75
+  fields:
+    specialization: higienistka stomatologiczna
+- model: core.Specialization
+  pk: 76
+  fields:
+    specialization: hematolog dziecięcy
+- model: core.Specialization
+  pk: 77
+  fields:
+    specialization: patomorfolog
+- model: core.Specialization
+  pk: 78
+  fields:
+    specialization: pulmonolo gdziecięcy
+- model: core.Specialization
+  pk: 79
+  fields:
+    specialization: hipertensjolog
+- model: core.Specialization
+  pk: 80
+  fields:
+    specialization: nefrolog dziecięcy
+- model: core.Specialization
+  pk: 81
+  fields:
+    specialization: alergolog dziecięcy
+- model: core.Specialization
+  pk: 82
+  fields:
+    specialization: neonatolog
+- model: core.Specialization
+  pk: 83
+  fields:
+    specialization: perinatolog
+- model: core.Specialization
+  pk: 84
+  fields:
+    specialization: bariatra
+- model: core.Specialization
+  pk: 85
+  fields:
+    specialization: biegły sądowy
+- model: core.Specialization
+  pk: 86
+  fields:
+    specialization: ortoptysta
+- model: core.Specialization
+  pk: 87
+  fields:
+    specialization: onkolog dziecięcy
+- model: core.Specialization
+  pk: 88
+  fields:
+    specialization: neurochirur gdziecięcy
+- model: core.Specialization
+  pk: 89
+  fields:
+    specialization: chirurg klatki piersiowej
+- model: core.Specialization
+  pk: 90
+  fields:
+    specialization: transplantolog
+- model: core.Specialization
+  pk: 91
+  fields:
+    specialization: angiochirurg
+- model: core.Specialization
+  pk: 92
+  fields:
+    specialization: ginekologia dziecięca
+- model: core.Specialization
+  pk: 93
+  fields:
+    specialization: lekarz medycyny ratunkowej
+- model: core.Specialization
+  pk: 94
+  fields:
+    specialization: radioterapeuta
+- model: core.Specialization
+  pk: 95
+  fields:
+    specialization: reumatolog dziecięcy
+- model: core.Specialization
+  pk: 96
+  fields:
+    specialization: histopatolog
+- model: core.Specialization
+  pk: 97
+  fields:
+    specialization: diabetologdziecięcy
+- model: core.Specialization
+  pk: 98
+  fields:
+    specialization: psychoonkolog
+- model: core.Specialization
+  pk: 99
+  fields:
+    specialization: psychotraumatolog
+- model: core.Specialization
+  pk: 100
+  fields:
+    specialization: terapeuta
