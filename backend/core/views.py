@@ -22,7 +22,8 @@ from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
     RetrieveAPIView,
-    GenericAPIView
+    GenericAPIView,
+    UpdateAPIView
 )
 from core.serializers import (
     DocSerializer,
@@ -108,13 +109,13 @@ class CreateModeratorAPIView(CreateAPIView):
 #         return super().post(request, *args, **kwargs)
 
 
-class AssignDoctorDataAPIView(CreateAPIView):
+class AssignDoctorDataAPIView(UpdateAPIView):
     # permission_classes = [ModeratorPermission|AdminPermission]
     permission_classes = [AllowAny]
     serializer_class = DoctorAssignSerializer
 
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
 
 
 class ListDoctorAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
