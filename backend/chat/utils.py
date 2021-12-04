@@ -17,17 +17,17 @@ def create_hash(key: str = uuid.uuid4()):
     hash.update(f"{time.time()}{key}".encode())
     return hash.hexdigest()
 
-def ParametrizedRetriveValidator(role: str,
-                                error_code: int,
-                                model: Visit) -> Response:
+def ParametrizedRetriveValidator(error_code: int, model: Visit) -> Response:
     def retrieve_validator(func):
         @functools.wraps(func)
         def wrapping_function(*args, **kwargs):
             args[0].queryset = model.objects.filter(atendees__in=[args[1].user.id])
             if kwargs.get("pk"):
                 visit = args[0].retrieve(args[1], *args, **kwargs)
-                if type(visit.data["atendees"]) != str:
-                    atendee_ids = [value[key] for value in visit.data["atendees"] for key in value if key=="id"]
+                if type(visit.data["atendees"][0]) not in [str, uuid.UUID]:
+                    print(type(visit.data["atendees"][0]))
+                    atendee_ids = [value[key] for value in visit.data["atendees"] 
+                                    for key in value if key=="id"]
                     print(str(args[1].user.id) in atendee_ids, 0)
                 else:
                     atendee_ids = visit.data["atendees"]
@@ -38,7 +38,7 @@ def ParametrizedRetriveValidator(role: str,
                             {"message": "You dont have access to retrieve the data",},
                             status=error_code,
                             exception=SuspiciousOperation(
-                                f"{role}: {args[1].user.id} tried retrieve protected data"
+                                f"User: {args[1].user.id} tried retrieve protected data"
                             )
                     )
             if date_lookup := args[1].data.get("datelookup"):

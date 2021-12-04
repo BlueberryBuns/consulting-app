@@ -1,10 +1,16 @@
-from django.db.models import fields
-from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer, ValidationError
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from rest_framework import fields, serializers
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.serializers import (
+    ModelSerializer,
+    Serializer,
+    ValidationError
+)
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-from django.contrib.auth import get_user_model, models
-
+from django.contrib.auth import get_user_model
 from core.models import (
     Doctor,
     Nationality,
@@ -145,68 +151,6 @@ class SafeUserSerializer(ModelSerializer):
             "doctors_id",
         )
 
-# class DoctorAccountSerializer(UserSerializer):
-#     specializations = serializers.ListField(allow_empty=False,)
-#     academic_title = serializers.CharField()
-
-#     class Meta:
-#         model = get_user_model()
-#         fields = (
-#             "id",
-#             "email",
-#             "first_name",
-#             "middle_names",
-#             "last_name",
-#             "password",
-#             "password_confirmation",
-#             "specializations",
-#             "academic_title"
-#         )
-
-#         kwargs = {
-#             "id": {"read_only": True},
-#             "password": {"write_only": True},
-#             "password_confirmation": {"write_only": True},
-#             "specializations": {"write_only": True},
-#             "academic_title": {"write_only": True}
-#         }
-#     def create(self, validated_data: dict):
-#         specializations = validated_data.pop("specializations")
-#         academic_title = validated_data.pop("academic_title")
-#         print(validated_data)
-#         user_data = {
-#             key: val
-#             for key, val in validated_data.items()
-#             if key
-#             not in [
-#                 "password_confirmation",
-#             ]
-#         }
-#         print(user_data)
-#         # for k,v in user_data:
-#         #     print(f"{k}:{v}")
-#         instance =  self.Meta.model.objects.create_doctor(**user_data)
-#         doctor = Doctor.objects.create(academic_title=academic_title)
-#         doctor.specializations.set(specializations)
-#         doctor.save()
-#         instance.doctors_id = doctor
-#         instance.save()
-#         return instance
-
-#     def validate(self, attrs: dict) -> dict:
-#         attrs = super().validate(attrs)
-#         if title := attrs.get("academic_title"):
-#             print(title)
-#             print(Doctor._Titles.choices)
-#             assert (title, title) in Doctor._Titles.choices, "Unknown doctor title"
-#         return attrs
-
-#     def update(self, instance, validated_data):
-#         return super().update(instance, validated_data)
-
-#     def get_value(self, dictionary):
-#         return super().get_value(dictionary)
-
 
 class LoginSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -267,3 +211,42 @@ class DoctorAssignSerializer(ModelSerializer):
         else:
             raise ValueError("UserID was not provided")
         return attrs
+
+
+class ResetPasswordSerializer(Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ("email",)
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        if self.Meta.model.objects.get(email=email):
+            return attrs
+        raise ObjectDoesNotExist
+
+class NewPasswordSerializer(Serializer):
+    password = serializers.CharField(write_only=True)
+    encoded_user_id = serializers.CharField(write_only=True)
+    reset_token = serializers.CharField(write_only=True)
+
+    class Meta:
+        fields = (
+            "password",
+            "encoded_user_id",
+            "reset_token",
+        )
+    
+    def validate(self, attrs):
+        encoded_user_id = attrs.get("encoded_user_id")
+        reset_token = attrs.get("reset_token")
+        user_id = force_text(urlsafe_base64_decode(encoded_user_id))
+        user = get_user_model().objects.get(id=user_id)
+        if not PasswordResetTokenGenerator().check_token(user, reset_token):
+            raise AuthenticationFailed("Invalid id and/or token")
+        return super().validate(attrs)
+
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)

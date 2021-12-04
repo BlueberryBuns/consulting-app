@@ -1,7 +1,22 @@
+from django.contrib.auth import get_user_model
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny, IsAdminUser
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
-from django.core.cache import cache
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from django.utils.encoding import (
+    DjangoUnicodeDecodeError,
+    smart_text,
+    smart_bytes,
+    force_text,
+)
+from django.utils.http import (
+    urlsafe_base64_decode,
+    urlsafe_base64_encode
+)
+from core.utils import EmailSender
 from core.models import Doctor, Specialization, User
 from rest_framework.generics import (
     CreateAPIView,
@@ -15,9 +30,11 @@ from core.serializers import (
     DoctorSerializer,
     DoctorAssignSerializer,
     ModeratorAccountSerializer,
+    NewPasswordSerializer,
     SpecializationSerializer,
     UserSerializer,
     LoginSerializer,
+    ResetPasswordSerializer,
 )
 from consulting_app.permissions import (
     DoctorPermission,
@@ -25,14 +42,14 @@ from consulting_app.permissions import (
     AdminPermission
 )
 
-class GetDoctorsAPIView(ListAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = DoctorSerializer
+# class GetDoctorsAPIView(ListAPIView):
+#     permission_classes = [AllowAny]
+#     serializer_class = DoctorSerializer
 
-    queryset = User.objects.exclude(doctors_id=None)
+#     queryset = User.objects.exclude(doctors_id=None)
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return super().get(request, *args, **kwargs)
 
 
 class GetDocsAPIView(ListAPIView):
@@ -104,26 +121,26 @@ class ListDoctorAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = DoctorSerializer
 
-    queryset = User.objects.exclude(doctors_id = None)
+    queryset = User.objects.exclude(doctors_id=None)
 
     def get(self, request, *args, **kwargs):
-        if kwargs.get("pk"):
+        if pk := kwargs.get("pk"):
+            print(pk)
             return self.retrieve(self, request, *args, **kwargs)
-        if kwargs.get("query"):
-            if first_name := request.data.get("first_name"):
-                print(first_name)
-                self.queryset = self.queryset.filter(first_name__contains=first_name)
-            if last_name := request.data.get("last_name"):
-                print(last_name)
-                self.queryset = self.queryset.filter(last_name__contains=last_name)
-            if academic_title := request.data.get("academic_title"):
-                print(academic_title)
-                self.queryset = self.queryset.filter(doctors_id__academic_title=academic_title)
-            if specializations := request.data.get("specializations"):
-                print(specializations)
-                self.queryset = self.queryset.filter(
-                    doctors_id__specializations__in=specializations
-                )
+        if first_name := request.data.get("first_name"):
+            print(first_name)
+            self.queryset = self.queryset.filter(first_name__contains=first_name)
+        if last_name := request.data.get("last_name"):
+            print(last_name)
+            self.queryset = self.queryset.filter(last_name__contains=last_name)
+        if academic_title := request.data.get("academic_title"):
+            print(academic_title)
+            self.queryset = self.queryset.filter(doctors_id__academic_title=academic_title)
+        if specializations := request.data.get("specializations"):
+            print(specializations)
+            self.queryset = self.queryset.filter(
+                doctors_id__specializations__in=specializations
+            )
 
         return self.list(request, *args, **kwargs)
 
@@ -145,9 +162,8 @@ class SpecializationsAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView)
     def get(self, request, *args, **kwargs):
         if kwargs.get("pk"):
             return self.retrieve(self, request, *args, **kwargs)
-        if kwargs.get("contains"):
-            if spec := request.data.get("spec"):
-                self.queryset = self.queryset.filter(specialization__contains=spec)
+        if specialization := request.data.get("specialization"):
+            self.queryset = self.queryset.filter(specialization__contains=specialization)
 
         return self.list(request, *args, **kwargs)
     
@@ -160,5 +176,67 @@ class LoginAPIView(TokenObtainPairView):
         res = super().post(request, *args, **kwargs)
         return res
 
-class ReedeemRefreshTokenView():
-    ...
+class PasswordResetAPIView(GenericAPIView):
+    serializer_class = ResetPasswordSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        encoded_user_id = kwargs.get("encoded_user_id")
+        reset_token = kwargs.get("reset_token")
+        user_id = smart_text(urlsafe_base64_decode(encoded_user_id))
+        user = User.objects.get(id=user_id)
+
+        if not PasswordResetTokenGenerator().check_token(user, reset_token):
+            return Response({"message":"Token has expired or is invalid"}, status=401)
+
+        return Response({
+            "message": "Thanks for reseting password",
+            "succes": True,
+            "encoded_user_id": encoded_user_id,
+            "reset_token": reset_token
+        })
+
+
+    def post(self, request, *args, **kwargs):
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = get_user_model().objects.get(email=serializer.data["email"])
+        print(user)
+        encoded_user_id = urlsafe_base64_encode(smart_bytes(user.id))
+        reset_token = PasswordResetTokenGenerator().make_token(user)
+        domain = get_current_site(request=request).domain
+        resource_identifier = reverse(
+            "reset-password", kwargs={
+                "encoded_user_id": encoded_user_id,
+                "reset_token": reset_token
+            }
+        )
+        url = f"https://{domain}{resource_identifier}"
+        print(url)
+        email_data = {
+            "to": user.email,
+            "subject": "Password reset requested",
+            "body": f"Click in the link to reset your password: {url}",
+        }
+        print(email_data)
+
+        EmailSender.send(data=email_data)
+
+        return Response({
+            "message": "Yes, I can reset your password"
+        }, status=200)
+        
+class UpdatePasswordAPIView(GenericAPIView):
+    serializer_class = NewPasswordSerializer
+    permission_classes = [AllowAny]
+
+    queryset = get_user_model().objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        encoded_user_id = request.data.get("encoded_user_id")
+        user_id = force_text(urlsafe_base64_decode(encoded_user_id))
+        user = get_user_model().objects.get(id=user_id)
+        user.set_password(request.data["password"])
+        user.save()
+
+        return Response({"message": "Password updated"}, status=200)

@@ -42,11 +42,11 @@ class ListVisitPatientDoctorAPIView(RetrieveModelMixin,
     permission_classes = [PatientPermission]
     serializer_class = SafeListVisitSerializer
 
-    @ParametrizedRetriveValidator(role="Patient", error_code=423, model=Visit)
+    @ParametrizedRetriveValidator(error_code=413, model=Visit)
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-class VisitPatientAPIView(CreateModelMixin,
+class UpdateCreateVisitPatientAPIView(CreateModelMixin,
                             UpdateModelMixin,
                             RetrieveModelMixin,
                             ListModelMixin,
@@ -98,10 +98,6 @@ class VisitPatientAPIView(CreateModelMixin,
     @validateUpdate
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
-    @ParametrizedRetriveValidator(role="Patient", error_code=423, model=Visit)
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         d = request.data
@@ -170,7 +166,7 @@ class VisitDoctorAPIView(ListModelMixin,
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-    @ParametrizedRetriveValidator(role="Patient", error_code=432, model=Visit)
+    @ParametrizedRetriveValidator(error_code=432, model=Visit)
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -200,7 +196,7 @@ class VisitAPIView(ListModelMixin,
 class VisitModeratorAPIView(VisitAPIView,
                             UpdateModelMixin,
                             CreateModelMixin):
-    permission_classes = [ModeratorPermission]
+    permission_classes = [ModeratorPermission|AdminPermission]
     serializer_class = StandardVisitSerializer
 
     queryset = Visit.objects.all()
@@ -213,7 +209,3 @@ class VisitModeratorAPIView(VisitAPIView,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
-
-class VisitAdminAPIView(VisitModeratorAPIView):
-    permission_classes = [AdminPermission]

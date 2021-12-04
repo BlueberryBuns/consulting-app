@@ -1,10 +1,29 @@
 __all__ = ['UserDataValidator',]
 
 from typing import Tuple
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 
 
 class UserValueError(ValueError): ...
 
+
+class EmailSender:
+    def send(data: dict, *args, **kwargs) -> None:
+        email = EmailMessage(
+            subject=data.get("subject"),
+            body=data.get("body"),
+            to=[data.get("recipent")]
+        )
+        print(email.send())
+        print(send_mail(
+            subject=data.get("subject"),
+            message=data.get("body"),
+            recipient_list=[data.get("recipent")],
+            fail_silently=False,
+            from_email=None
+        ))
+        
 
 class UserDataValidator:
     @classmethod
