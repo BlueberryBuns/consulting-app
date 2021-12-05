@@ -186,6 +186,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://application.blueberrybuns.com:12345",
     "https://application.blueberrybuns.com:12345",
     "https://application.blueberrybuns.com",
+    "https://application.blueberrybuns.com/login",
+    "https://application.blueberrybuns.com/register",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -194,6 +196,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://application.blueberrybuns.com:12345",
     "https://application.blueberrybuns.com:12345",
     "https://application.blueberrybuns.com",
+    "https://application.blueberrybuns.com/login",
+    "https://application.blueberrybuns.com/register",
 ]
 
 

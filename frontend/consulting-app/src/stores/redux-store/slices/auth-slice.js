@@ -7,6 +7,8 @@ const initialAuthState = {
   isDoctor: false,
   isModerator: false,
   isAdmin: false,
+  firstName: null,
+  lastName: null,
 };
 
 const accountSlice = createSlice({
@@ -18,22 +20,60 @@ const accountSlice = createSlice({
       console.log(action);
       localStorage.setItem("access_token", action.payload.access);
       localStorage.setItem("refresh_token", action.payload.refresh);
+      switch (action.payload.role) {
+        case 5:
+          state.isAdmin = true;
+          break;
+        case 4:
+          state.isModerator = true;
+          break;
+        case 3:
+          state.isDoctor = true;
+          break;
+        case 2:
+          break;
+        case 1:
+          break;
+        default:
+          break;
+      }
       state.accessToken = action.payload.access;
       state.refreshToken = action.payload.refresh;
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
       state.isAuthenticated = true;
     },
     updateIsAuthenticated(state, action) {
       console.log("Auth updated");
+      switch (action.payload.role) {
+        case 5:
+          state.isAdmin = true;
+          break;
+        case 4:
+          state.isModerator = true;
+          break;
+        case 3:
+          state.isDoctor = true;
+          break;
+        case 2:
+          break;
+        case 1:
+          break;
+        default:
+          break;
+      }
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
       state.isAuthenticated = true;
     },
-    updateUserData(state, action) {
-      state.firstName = action.firstName;
-      state.middleNames = action.middleNames;
-      state.lastName = action.lastName;
-    },
     logout(state, action) {
+      state.firstName = null;
+      state.lastName = null;
       state.accessToken = null;
       state.refreshToken = null;
+      state.isAdmin = false;
+      state.isModerator = false;
+      state.isDoctor = false;
       state.isAuthenticated = false;
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");

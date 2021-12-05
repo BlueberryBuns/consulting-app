@@ -1,83 +1,83 @@
 import { useSelector } from "react-redux";
 import { Route } from "react-router";
 import { Redirect } from "react-router-dom";
+import { PatientModule } from "../Application/PatientModule";
 
-const PatientRoute = ({ component: RenderedComponent, ...rest }) => {
+const PatientRoutes = ({ component: Component, ...rest }) => {
   const authState = useSelector((state) => state.account);
-
   return (
     <Route
       {...rest}
-      render={(props) => {
-        if (!authState.isAuthenticated) {
-          console.log("pacjent");
-          return (
-            <Redirect
-              to={{ pathname: "/login", state: { from: props.location } }}
-            />
-          );
-        }
-        return <RenderedComponent {...props} />;
-      }}
-    />
-  );
-};
-const DoctorRoute = ({ component: RenderedComponent, ...rest }) => {
-  const authState = useSelector((state) => state.account);
-
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        if (!authState.isDoctor) {
-          return (
-            <Redirect
-              to={{ pathname: "/login", state: { from: props.location } }}
-            />
-          );
-        }
-        return <RenderedComponent {...props} />;
-      }}
-    />
-  );
-};
-const ModeratorRoute = ({ component: RenderedComponent, ...rest }) => {
-  const authState = useSelector((state) => state.account);
-
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        if (!(authState.isModerator && authState.isAdmin)) {
-          return (
-            <Redirect
-              to={{ pathname: "/login", state: { from: props.location } }}
-            />
-          );
-        }
-        return <RenderedComponent {...props} />;
-      }}
+      render={(props) =>
+        authState.isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
     />
   );
 };
 
-const AdminRoute = ({ component: RenderedComponent, ...rest }) => {
+// const PatientRoute = (props) => {
+//   const authState = useSelector((state) => state.account);
+//   console.log(props);
+//   return (
+//     <div>XD</div>
+//     // <Route
+//     //   {...props}
+//     //   render={(props) => {
+//     //     return (
+//     //       <div>Not working</div>
+//     //       // <Redirect
+//     //       //   to={{ pathname: "/login", state: { from: props.location } }}
+//     //       // />
+//     //     );
+//     //     // return <RenderedComponent {...props} />;
+//     //   }}
+//     // />
+//   );
+// };
+const DoctorRoutes = ({ component: Component, ...rest }) => {
   const authState = useSelector((state) => state.account);
-
   return (
     <Route
       {...rest}
-      render={(props) => {
-        if (authState.isAdmin) {
-          return (
-            <Redirect
-              to={{ pathname: "/patient", state: { from: props.location } }}
-            />
-          );
-        }
-        return <RenderedComponent {...props} />;
-      }}
+      render={(props) =>
+        authState.isDoctor | authState.isAdmin ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
     />
   );
 };
-export { PatientRoute, DoctorRoute, ModeratorRoute, AdminRoute };
+const ModeratorRoutes = ({ component: Component, ...rest }) => {
+  const authState = useSelector((state) => state.account);
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        authState.isModerator | authState.isAdmin ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
+    />
+  );
+};
+
+const AdminRoutes = ({ component: Component, ...rest }) => {
+  const authState = useSelector((state) => state.account);
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        authState.isAdmin ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
+  );
+};
+export { PatientRoutes, DoctorRoutes, ModeratorRoutes, AdminRoutes };

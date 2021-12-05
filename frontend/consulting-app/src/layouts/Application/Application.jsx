@@ -1,21 +1,24 @@
 import { ThemeProvider, createTheme } from "@mui/material";
-import MeetingsView from "../../layouts/Application/Meetings";
-import CallView from "../../layouts/Application/Call";
+// import MeetingsView from "../RestrictedViews/Meetings";
+// import CallView from "../RestrictedViews/Call";
 // import Login from "../../layouts/Application/Account";
-import Cam from "../../App";
+// import Cam from "../../App";
 import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
-import SignInSide from "./TempLogin";
+// import SignInSide from "./TempLogin";
 import NavigationBar from "../../components/NavBar/NavBar";
 import {
-  PatientRoute,
+  PatientRoutes,
   DoctorRoute,
-  AdminRoute,
   ModeratorRoute,
+  PatRoute,
 } from "../RouteTypes/RouteTypes";
 import { DoctorModule } from "./DoctorModule";
 import { ModeratorModule } from "./ModeratorModule";
 import { PatientModule } from "./PatientModule";
 import UnauthorisedModule from "./UnauthorisedApp";
+import LoginPage from "../UnrestrictedViews/LoginPage";
+import RegisterPage from "../UnrestrictedViews/RegisterPage";
+import LandingPage from "../UnrestrictedViews/LandingPage";
 import authAxios from "../../Auth/auth-axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -36,12 +39,11 @@ const Application = () => {
             const response = await authAxios.post("/api/token/verify/", {
               token: authState.accessToken,
             });
+            const responseRole = await authAxios.get("/api/role/", {});
             if (response.statusText === "OK") {
-              console.log(response);
-              console.log("Saved token is valid, authorising user");
-              dispatch(accountActions.updateIsAuthenticated());
-              return;
+              dispatch(accountActions.updateIsAuthenticated(responseRole.data));
             }
+            return;
           } catch (err) {
             console.log(err);
             try {
@@ -51,13 +53,10 @@ const Application = () => {
                   refresh: authState.refreshToken,
                 }
               );
-
-              // Rotate access and refresh tokens
-              console.log(responseRefresh);
-              console.log("Refreshed Token");
-              dispatch(accountActions.updateTokens(responseRefresh.data));
+              const responseRole = await authAxios.get("/api/role/", {});
+              let data = { ...responseRefresh.data, ...responseRole.data };
+              dispatch(accountActions.updateTokens(data));
             } catch (error) {
-              console.log(error);
               dispatch(accountActions.logout());
             }
           }
@@ -76,23 +75,23 @@ const Application = () => {
       <BrowserRouter>
         <NavigationBar />
         <Switch>
-          <UnauthorisedModule />
-          <PatientRoute
+          <Route exact path="/" render={(props) => <LandingPage />} />
+          <Route
             exact
-            path="/patient"
-            render={(props) => <PatientModule {...props} />}
+            path="/login"
+            render={(props) => <LoginPage {...props} />} //<LandingPageTMP {...props} />}
           />
-          <DoctorRoute
+          <Route
             exact
-            path="/doctor"
-            render={(props) => <DoctorModule {...props} />}
+            path="/register"
+            render={(props) => <RegisterPage {...props} />} //<LandingPageTMP {...props} />}
           />
-          <ModeratorRoute
+          <Route
             exact
-            path="/moderator"
-            render={(props) => <ModeratorModule {...props} />}
+            path="/doctors"
+            render={(props) => <div>Doctors</div>} //<LandingPageTMP {...props} />}
           />
-
+          <PatientRoutes component={PatientModule} path="/patient" />
           {/* <Route
             exact
             path="/"

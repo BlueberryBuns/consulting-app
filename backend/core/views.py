@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -40,7 +40,8 @@ from core.serializers import (
 from consulting_app.permissions import (
     DoctorPermission,
     ModeratorPermission,
-    AdminPermission
+    AdminPermission,
+    PatientPermission
 )
 
 # class GetDoctorsAPIView(ListAPIView):
@@ -144,6 +145,17 @@ class ListDoctorAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
             )
 
         return self.list(request, *args, **kwargs)
+
+class UserRole(GenericAPIView):
+    permission_classes = [PatientPermission]
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            "role": request.user.role_id,
+            "firstName": request.user.first_name,
+            "lastName": request.user.last_name,
+        }, status=200)
 
 
 class SignUpAPIView(CreateAPIView):

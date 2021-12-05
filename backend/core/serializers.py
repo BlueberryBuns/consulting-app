@@ -9,7 +9,7 @@ from rest_framework.serializers import (
     Serializer,
     ValidationError
 )
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
 from django.contrib.auth import get_user_model
 from core.models import (
     Doctor,

@@ -1,7 +1,8 @@
 import { Route } from "react-router";
-import LoginPage from "./LoginPage";
-import RegisterPage from "./RegisterPage";
-import LandingPage from "./LandingPage";
+import LoginPage from "../UnrestrictedViews/LoginPage";
+import RegisterPage from "../UnrestrictedViews/RegisterPage";
+import LandingPage from "../UnrestrictedViews/LandingPage";
+
 const UnauthorisedModule = () => {
   return (
     <>
