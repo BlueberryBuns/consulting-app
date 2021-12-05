@@ -11,9 +11,42 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useHistory } from "react-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { accountActions } from "../../stores/redux-store/slices/auth-slice";
+import authAxios from "../../Auth/auth-axios";
+import { useDispatch } from "react-redux";
 
-function Copyright(props) {
+const loginHandler = async (email, password) => {
+  console.log("Sent user login data");
+  const res = await authAxios.post("/api/login/", {
+    email: email,
+    password: password,
+  });
+  return res;
+};
+
+const registerHandler = async (
+  email,
+  password,
+  confirmPassword,
+  firstName,
+  lastName
+) => {
+  console.log("Sent register data");
+  const response = await authAxios.post("/api/register/", {
+    email: email,
+    first_name: firstName,
+    last_name: lastName,
+    password: password,
+    password_confirmation: confirmPassword,
+  });
+  console.log(response);
+
+  return response;
+};
+
+const Copyright = (props) => {
   return (
     <Typography
       variant="body2"
@@ -29,19 +62,38 @@ function Copyright(props) {
       {"."}
     </Typography>
   );
-}
+};
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const redirectToLogin = () => {
+    history.push("/login");
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    let email = data.get("email");
+    let password = data.get("password");
+    let passwordConfirmation = data.get("passwordConfirmation");
+    let firstName = data.get("firstName");
+    let lastName = data.get("lastName");
+    const registerResponse = await registerHandler(
+      email,
+      password,
+      passwordConfirmation,
+      firstName,
+      lastName
+    );
+    if (registerResponse.status === 201) {
+      console.log("Tried logging in after register");
+      const loginAfterRegisterResponse = await loginHandler(email, password);
+      dispatch(accountActions.updateTokens(loginAfterRegisterResponse.data));
+      console.log(loginAfterRegisterResponse);
+    }
   };
 
   return (
@@ -60,37 +112,57 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Rejestracja
           </Typography>
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 0 }}
           >
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="firstNameInput"
+              label="Imię"
+              name="firstName"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
+              id="firstNameInput"
+              label="Nazwisko"
+              name="lastName"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Adres email"
+              name="email"
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               name="password"
-              label="Password"
+              label="Hasło"
               type="password"
               id="password"
-              autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="passwordConfirmation"
+              label="Potwierdzenie hasła"
+              type="password"
+              id="password-confirmation"
             />
             <Button
               type="submit"
@@ -98,7 +170,7 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 0 }}
             >
-              Sign In
+              Zarejestruj się
             </Button>
             <Button
               type="submit"
@@ -106,8 +178,9 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 1, mb: 1 }}
+              onClick={redirectToLogin}
             >
-              Don't have an account? Sign Up
+              Masz już konto? Zaloguj się!
             </Button>
           </Box>
         </Box>

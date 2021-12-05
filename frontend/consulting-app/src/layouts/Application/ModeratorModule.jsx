@@ -1,0 +1,3 @@
+const ModeratorModule = () => {};
+
+export { ModeratorModule };

@@ -1,0 +1,3 @@
+const DoctorModule = () => {};
+
+export { DoctorModule };

@@ -4,6 +4,9 @@ const initialAuthState = {
   accessToken: localStorage.getItem("access_token"),
   refreshToken: localStorage.getItem("refresh_token"),
   isAuthenticated: false,
+  isDoctor: false,
+  isModerator: false,
+  isAdmin: false,
 };
 
 const accountSlice = createSlice({

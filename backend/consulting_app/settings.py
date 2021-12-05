@@ -185,6 +185,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://192.168.50.239:3000",
     "http://application.blueberrybuns.com:12345",
     "https://application.blueberrybuns.com:12345",
+    "https://application.blueberrybuns.com",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -192,6 +193,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://192.168.50.239:3000",
     "http://application.blueberrybuns.com:12345",
     "https://application.blueberrybuns.com:12345",
+    "https://application.blueberrybuns.com",
 ]
 
 

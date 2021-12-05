@@ -152,6 +152,7 @@ class SignUpAPIView(CreateAPIView):
     queryset = User.objects.all()
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         return super().post(request, *args, **kwargs)
 
 
