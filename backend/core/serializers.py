@@ -23,7 +23,7 @@ __all__ = ("UserSerializer", "LoginSerializer")
 class SpecializationSerializer(ModelSerializer):
     class Meta:
         model = Specialization
-        fields = ("specialization",)
+        fields = "__all__"
 
 
 class ListUsersSerializer(ModelSerializer):
@@ -135,6 +135,7 @@ class DoctorSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
+            "id",
             "first_name",
             "last_name",
             "doctors_id",

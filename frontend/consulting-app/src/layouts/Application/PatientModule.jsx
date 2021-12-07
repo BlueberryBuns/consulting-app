@@ -1,5 +1,5 @@
 import { Route, Redirect } from "react-router-dom";
-import { SelectDoctor } from "../patient/SelectDoctor";
+import { SelectDoctorPatient } from "../patient/SelectDoctor";
 import { SelectDate } from "../patient/SelectDate";
 import { Visits } from "../patient/Visits";
 const PatientModule = (props) => {
@@ -12,8 +12,8 @@ const PatientModule = (props) => {
       ></Route>
       <Route
         exact
-        path="/patient/meeting/browse-doctos"
-        render={(props) => <SelectDoctor />}
+        path="/patient/meeting/browse-doctors"
+        render={(props) => <SelectDoctorPatient />}
       ></Route>
       <Route
         exact

@@ -91,7 +91,10 @@ const Application = () => {
             path="/doctors"
             render={(props) => <div>Doctors</div>} //<LandingPageTMP {...props} />}
           />
-          <PatientRoutes component={PatientModule} path="/patient" />
+          <PatientRoutes
+            component={(props) => <PatientModule {...props} />}
+            path="/patient"
+          />
           {/* <Route
             exact
             path="/"

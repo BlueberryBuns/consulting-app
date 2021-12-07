@@ -64,8 +64,7 @@ export default function SignIn() {
     const response = await loginHandler(email, password);
     if (response.statusText === "OK") {
       dispatch(accountActions.updateTokens(response.data));
-      console.log(response.data);
-      history.push("/patient");
+      history.push("/patient/visits");
     }
   };
 

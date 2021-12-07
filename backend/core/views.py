@@ -129,20 +129,20 @@ class ListDoctorAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
         if pk := kwargs.get("pk"):
             print(pk)
             return self.retrieve(self, request, *args, **kwargs)
-        if first_name := request.data.get("first_name"):
+        if spec := request.GET.get("specialization", ""):
+            print(spec)
+            self.queryset = self.queryset.filter(
+                doctors_id__specializations__in=[spec]
+            )
+        if first_name := request.GET.get("first_name", ""):
             print(first_name)
             self.queryset = self.queryset.filter(first_name__contains=first_name)
-        if last_name := request.data.get("last_name"):
+        if last_name := request.GET.get("last_name", ""):
             print(last_name)
             self.queryset = self.queryset.filter(last_name__contains=last_name)
-        if academic_title := request.data.get("academic_title"):
+        if academic_title := request.GET.get("academic_title", ""):
             print(academic_title)
             self.queryset = self.queryset.filter(doctors_id__academic_title=academic_title)
-        if specializations := request.data.get("specializations"):
-            print(specializations)
-            self.queryset = self.queryset.filter(
-                doctors_id__specializations__in=specializations
-            )
 
         return self.list(request, *args, **kwargs)
 
@@ -171,12 +171,12 @@ class SignUpAPIView(CreateAPIView):
 class SpecializationsAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = SpecializationSerializer
-    queryset = Specialization.objects.all()
+    queryset = Specialization.objects.all().order_by("specialization")
 
     def get(self, request, *args, **kwargs):
         if kwargs.get("pk"):
             return self.retrieve(self, request, *args, **kwargs)
-        if specialization := request.data.get("specialization"):
+        if specialization := request.GET.get("specialization", ""):
             self.queryset = self.queryset.filter(specialization__contains=specialization)
 
         return self.list(request, *args, **kwargs)

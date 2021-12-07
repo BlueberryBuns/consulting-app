@@ -5,10 +5,8 @@ import {
   Box,
   IconButton,
   Hidden,
-  Divider,
-  List,
   Button,
-  ListItem,
+  Paper,
 } from "@mui/material";
 import React from "react";
 import MedService from "@mui/icons-material/MedicalServices";
@@ -22,7 +20,7 @@ import { useEffect, useState } from "react";
 import { SwipeableDrawer } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Link } from "react-router-dom";
-
+import { SliderButton } from "../Buttons/SliderPaperButton";
 const NavBar = () => {
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.account);
@@ -33,6 +31,58 @@ const NavBar = () => {
   };
 
   useEffect(() => {}, [authState.lastName]);
+
+  const patientMenu = [
+    {
+      type: "button",
+      restriction: "None",
+      name: "Strona główna",
+      url: "/",
+    },
+    {
+      type: "button",
+      name: "Moje wizyty",
+      url: "/patient/visits",
+    },
+    {
+      type: "button",
+      name: "Umów wizytę",
+      url: "/patient/meeting/browse-doctors",
+    },
+  ];
+
+  const doctorMenu = [
+    {
+      type: "button",
+      name: "Zarządzaj wizytami",
+      url: "/doctor/visits",
+    },
+  ];
+
+  const moderatorMenu = [
+    {
+      type: "button",
+      name: "Zarządzaj wizytami",
+      url: "/moderator/visits",
+    },
+    {
+      type: "button",
+      name: "Dodaj wizytę",
+      url: "/moderator/add-visit",
+    },
+    {
+      type: "button",
+      name: "Dodaj doktora",
+      url: "/moderator/add-doctor",
+    },
+  ];
+  const adminMenu = [
+    {
+      type: "button",
+      name: "Dodaj moderatora",
+      url: "/admin/add-moderator",
+    },
+  ];
 
   return (
     <AppBar position="relative" style={{ background: "purple" }}>
@@ -45,7 +95,7 @@ const NavBar = () => {
           <LinkTypography
             to={"/"}
             text={"Aplikacja do konsultacji"}
-            style={{ textDecoration: "none" }}
+            sx={{ textDecoration: "none" }}
             variant="h5"
             color="inherit"
             style={{ fontWeight: 600 }}
@@ -57,7 +107,7 @@ const NavBar = () => {
           <LinkTypography
             to={"/"}
             text={"ADK"}
-            style={{ textDecoration: "none" }}
+            sx={{ textDecoration: "none" }}
             variant="h5"
             color="inherit"
             style={{ fontWeight: 600 }}
@@ -79,9 +129,22 @@ const NavBar = () => {
         ) : (
           <>
             <Hidden smDown>
-              <Typography style={{ fontWeight: 600 }}>
+              <Typography
+                style={{
+                  fontWeight: 600,
+                  paddingRight: "30px",
+                }}
+              >
                 {authState.firstName} {authState.lastName}
               </Typography>
+              {patientMenu.map((item) => (
+                <ButtonLink
+                  to={item.url}
+                  text={item.name}
+                  style={{ fontWeight: 600 }}
+                  color="inherit"
+                ></ButtonLink>
+              ))}
               <ButtonLink
                 to={"/"}
                 text={"Wyloguj"}
@@ -113,76 +176,69 @@ const NavBar = () => {
           <Typography style={{ fontWeight: 600 }} textAlign="center">
             {authState.firstName} {authState.lastName}
           </Typography>
-          <Divider />
-          <List>
-            <ListItem>
-              <Link to="/">Home</Link>
-            </ListItem>
-            <ListItem>
-              <Link to="/">Przeglądaj lekarzy</Link>
-            </ListItem>
-            <ListItem>
-              <Link to="/">Umówione wizyty</Link>
-            </ListItem>
-            <ListItem>
-              <Link to="/">Umów wizytę</Link>
-            </ListItem>
-            {authState.isDoctor | authState.isAdmin ? (
-              <>
-                <Divider />
-                <Typography style={{ fontWeight: 600 }} textAlign="center">
-                  Panel Lekarza
-                </Typography>
-                <ListItem>
-                  <Link to="/">Zarządzaj wizytami</Link>
-                </ListItem>
-              </>
-            ) : (
-              <></>
-            )}
-            {authState.isModerator | authState.isAdmin ? (
-              <>
-                <Divider />
-                <Typography style={{ fontWeight: 600 }} textAlign="center">
-                  Panel Moderatora
-                </Typography>
-                <ListItem>
-                  <Link to="/">Zarządzaj wizytami</Link>
-                </ListItem>
-                <ListItem>
-                  <Link to="/">Dodaj wizytę</Link>
-                </ListItem>
-                <ListItem>
-                  <Link to="/">Dodaj lekarza</Link>
-                </ListItem>
-              </>
-            ) : (
-              <></>
-            )}
-            {authState.isAdmin ? (
-              <>
-                <Divider />
-                <Typography style={{ fontWeight: 600 }} textAlign="center">
-                  Panel Admina
-                </Typography>
-                <ListItem>
-                  <Link to="/">Dodaj Moderatora</Link>
-                </ListItem>
-              </>
-            ) : (
-              <></>
-            )}
-            <Divider />
-            <ListItem>
-              <Button
-                color="error"
-                variant={"contained"}
-                onClick={handleLogout}
-              >
-                Wyloguj
-              </Button>
-            </ListItem>
-          </List>
+
+          {patientMenu.map((item) => (
+            <SliderButton to={item.url} text={item.name}></SliderButton>
+          ))}
+          <Paper
+            elevation={0}
+            sx={{
+              borderBottom: "1px solid black",
+              borderRadius: "0 0 0 0 !important",
+              display: "grid",
+              placeItems: "center",
+              paddingTop: "30px",
+            }}
+          >
+            <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
+              Doctor
+            </Typography>
+          </Paper>
+          {doctorMenu.map((item) => (
+            <SliderButton to={item.url} text={item.name}></SliderButton>
+          ))}
+          <Paper
+            elevation={0}
+            sx={{
+              borderBottom: "1px solid black",
+              borderRadius: "0 0 0 0 !important",
+              display: "grid",
+              placeItems: "center",
+              paddingTop: "30px",
+            }}
+          >
+            <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
+              Panel Moderatora
+            </Typography>
+          </Paper>
+          {moderatorMenu.map((item) => (
+            <SliderButton to={item.url} text={item.name}></SliderButton>
+          ))}
+          <Paper
+            elevation={0}
+            sx={{
+              borderBottom: "1px solid black",
+              borderRadius: "0 0 0 0 !important",
+              display: "grid",
+              placeItems: "center",
+              paddingTop: "30px",
+            }}
+          >
+            <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
+              Panel Admina
+            </Typography>
+          </Paper>
+          {adminMenu.map((item) => (
+            <SliderButton to={item.url} text={item.name}></SliderButton>
+          ))}
+          <Button
+            sx={{ borderRadius: "0 0 0 0 !important" }}
+            color="error"
+            variant={"contained"}
+            onClick={handleLogout}
+          >
+            Wyloguj
+          </Button>
         </SwipeableDrawer>
       ) : (
         <></>

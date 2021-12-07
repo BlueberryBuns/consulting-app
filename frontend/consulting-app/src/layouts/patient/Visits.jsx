@@ -7,6 +7,7 @@ import {
   Card,
   Button,
   Hidden,
+  Paper,
 } from "@mui/material";
 
 import CardActions from "@mui/material/CardActions";
@@ -27,13 +28,30 @@ export const Visits = (props) => {
     const getVisits = async () => {
       try {
         visits = await authAxios.get("/api/patient/visits/details/");
-        console.log(visits.data);
+
         console.log(visits);
+      } catch (err) {
+      } finally {
         setIsLoaded(true);
-      } catch (err) {}
+      }
     };
     getVisits();
-  }, []);
+  }, [isLoaded]);
+
+  const getDate = (dateString) => {
+    let b = dateString.split(/\D/);
+    console.log(b);
+    console.log(b[0], b[1] - 1, b[2]);
+    console.log(new Date(+new Date(b[0], b[1] - 1, b[2]) + 1000 * 60 * 60));
+    console.log(new Date(dateString));
+    return new Date(b[0], b[1] - 1, b[2], b[3], b[4], b[5]);
+  };
+
+  const isAfterVisit = (dateString) => {
+    let visitDate = getDate(dateString);
+    return !!(new Date(+new Date() + 1000 * 60 * 60 * 3) >= visitDate);
+  };
+
   return (
     <main>
       {/* Hero unit */}
@@ -46,11 +64,10 @@ export const Visits = (props) => {
       >
         <Container maxWidth="md">
           <Typography
-            component="h2"
-            variant="h2"
+            component="h4"
+            variant="h4"
             align="center"
             color="text.primary"
-            gutterBottom
           >
             Twoje spotkania z lekarzami
           </Typography>
@@ -80,12 +97,76 @@ export const Visits = (props) => {
                 <Hidden smDown>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {visit.id}
+                      {visit.atendees[0].doctors_id
+                        ? visit.atendees[0].doctors_id.academic_title
+                        : ""}{" "}
+                      {visit.atendees[0].first_name}{" "}
+                      {visit.atendees[0].last_name}
                     </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
-                    </Typography>
+                    <Grid
+                      container
+                      sx={{
+                        paddingBottom: "5px",
+                        gridTemplateColumns: "1fr 1fr 1fr",
+                        gridGap: "5px",
+                      }}
+                    >
+                      {visit.atendees[0].doctors_id
+                        ? visit.atendees[0].doctors_id.specializations
+                          ? visit.atendees[0].doctors_id.specializations.map(
+                              (spec) => (
+                                <Paper elevation={3} sx={{ padding: "8px" }}>
+                                  {spec.specialization}
+                                </Paper>
+                              )
+                            )
+                          : "N"
+                        : ""}
+                    </Grid>
+                    <Grid
+                      container
+                      sx={{
+                        gridTemplateColumns: "1fr 1fr",
+                        gridTemplateRows: "1fr 1fr 1fr",
+                        gridGap: "6px",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "1 / 2",
+                          gridColumn: "1 / 2",
+                        }}
+                      >
+                        Termin konsultacji:
+                      </Typography>
+                      <Typography
+                        sx={{
+                          gridRow: "1 / 2",
+                          gridColumn: "2 / 3",
+                        }}
+                      >
+                        {visit.visit_date.split("T")[0]}{" "}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "2 / 3",
+                          gridColumn: "1 / 2",
+                        }}
+                      >
+                        Godzina:{" "}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "2 / 3",
+                          gridColumn: "2 / 3",
+                        }}
+                      >
+                        {visit.visit_date.split("T")[1].substring(0, 5)}
+                      </Typography>
+                    </Grid>
                   </CardContent>
                   <CardMedia
                     component="img"
@@ -98,18 +179,56 @@ export const Visits = (props) => {
                     image="https://source.unsplash.com/random"
                   />
                   <CardActions sx={{}}>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button
+                      disabled={isAfterVisit(visit.visit_date)}
+                      size="small"
+                    >
+                      Join
+                    </Button>
+                    <Button
+                      disabled={isAfterVisit(visit.visit_date)}
+                      size="small"
+                      color="error"
+                    >
+                      Cancel
+                    </Button>
                   </CardActions>
                 </Hidden>
                 <Hidden smUp>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {visit.id}
+                      {visit.atendees[0].doctors_id
+                        ? visit.atendees[0].doctors_id.academic_title
+                        : ""}{" "}
+                      {visit.atendees[0].first_name}{" "}
+                      {visit.atendees[0].last_name}
+                    </Typography>
+                    <Grid
+                      container
+                      sx={{
+                        paddingBottom: "5px",
+                        gridTemplateColumns: "1fr 1fr 1fr",
+                        gridGap: "5px",
+                      }}
+                    >
+                      {visit.atendees[0].doctors_id
+                        ? visit.atendees[0].doctors_id.specializations
+                          ? visit.atendees[0].doctors_id.specializations.map(
+                              (spec) => (
+                                <Paper elevation={3} sx={{ padding: "8px" }}>
+                                  {spec.specialization}
+                                </Paper>
+                              )
+                            )
+                          : "N"
+                        : ""}
+                    </Grid>
+
+                    <Typography>
+                      Termin konsultacji: {visit.visit_date.split("T")[0]}{" "}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
+                      Godzina: {visit.visit_date.split("T")[1].substring(0, 5)}
                     </Typography>
                   </CardContent>
                   <CardMedia
@@ -123,8 +242,19 @@ export const Visits = (props) => {
                     image="https://source.unsplash.com/random"
                   />
                   <CardActions sx={{ gridColumn: "1/3" }}>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button
+                      disabled={isAfterVisit(visit.visit_date)}
+                      size="small"
+                    >
+                      Join
+                    </Button>
+                    <Button
+                      disabled={isAfterVisit(visit.visit_date)}
+                      size="small"
+                      color="error"
+                    >
+                      Cancel
+                    </Button>
                   </CardActions>
                 </Hidden>
               </Card>
