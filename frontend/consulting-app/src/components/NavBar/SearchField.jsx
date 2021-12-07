@@ -10,6 +10,7 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 export const SearchField = (props) => {
   return (
     <Paper
+      onSubmit={props.onSubmit}
       component="form"
       sx={{
         p: "2px 4px",
@@ -23,6 +24,8 @@ export const SearchField = (props) => {
         sx={{ ml: 1, flexGrow: 1 }}
         placeholder="Podaj imię i nazwisko"
         inputProps={{ "aria-label": "search doctor" }}
+        name="docname"
+        id="docname"
       />
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
       <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">

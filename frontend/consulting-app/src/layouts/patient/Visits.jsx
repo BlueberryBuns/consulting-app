@@ -52,6 +52,14 @@ export const Visits = (props) => {
     return !!(new Date(+new Date() + 1000 * 60 * 60 * 3) >= visitDate);
   };
 
+  const jointVisit = (props) => {
+    console.log("join", props);
+  };
+
+  const cancelVisit = (props) => {
+    console.log("cancel", props);
+  };
+
   return (
     <main>
       {/* Hero unit */}
@@ -126,7 +134,9 @@ export const Visits = (props) => {
                     <Grid
                       container
                       sx={{
-                        gridTemplateColumns: "1fr 1fr",
+                        marginTop: "20px",
+                        display: "grid",
+                        gridTemplateColumns: "1fr 3fr",
                         gridTemplateRows: "1fr 1fr 1fr",
                         gridGap: "6px",
                       }}
@@ -159,12 +169,28 @@ export const Visits = (props) => {
                       </Typography>
                       <Typography
                         sx={{
-                          fontWeight: 600,
                           gridRow: "2 / 3",
                           gridColumn: "2 / 3",
                         }}
                       >
                         {visit.visit_date.split("T")[1].substring(0, 5)}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "3 / 3",
+                          gridColumn: "1 / 2 ",
+                        }}
+                      >
+                        Status:
+                      </Typography>
+                      <Typography
+                        sx={{
+                          gridRow: "3 / 4",
+                          gridColumn: "2 / 3",
+                        }}
+                      >
+                        {visit.status}
                       </Typography>
                     </Grid>
                   </CardContent>
@@ -195,7 +221,16 @@ export const Visits = (props) => {
                   </CardActions>
                 </Hidden>
                 <Hidden smUp>
-                  <CardContent>
+                  <CardMedia
+                    component="img"
+                    sx={{
+                      alignSelf: "center",
+                      gridRow: "1/3",
+                      gridColumn: "1/3",
+                    }}
+                    image="https://source.unsplash.com/random"
+                  />
+                  <CardContent sx={{ gridColumn: "1/3" }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {visit.atendees[0].doctors_id
                         ? visit.atendees[0].doctors_id.academic_title
@@ -224,34 +259,101 @@ export const Visits = (props) => {
                         : ""}
                     </Grid>
 
-                    <Typography>
-                      Termin konsultacji: {visit.visit_date.split("T")[0]}{" "}
-                    </Typography>
-                    <Typography>
-                      Godzina: {visit.visit_date.split("T")[1].substring(0, 5)}
-                    </Typography>
+                    <Grid
+                      container
+                      sx={{
+                        marginTop: "20px",
+                        display: "grid",
+                        gridTemplateColumns: "1fr 3fr",
+                        gridTemplateRows: "1fr 1fr 1fr",
+                        gridGap: "6px",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "1 / 2",
+                          gridColumn: "1 / 2",
+                        }}
+                      >
+                        Termin:
+                      </Typography>
+                      <Typography
+                        sx={{
+                          gridRow: "1 / 2",
+                          gridColumn: "2 / 3",
+                        }}
+                      >
+                        {visit.visit_date.split("T")[0]}{" "}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "2 / 3",
+                          gridColumn: "1 / 2",
+                        }}
+                      >
+                        Godzina:{" "}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          gridRow: "2 / 3",
+                          gridColumn: "2 / 3",
+                        }}
+                      >
+                        {visit.visit_date.split("T")[1].substring(0, 5)}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          gridRow: "3 / 3",
+                          gridColumn: "1 / 2 ",
+                        }}
+                      >
+                        Status:
+                      </Typography>
+                      <Typography
+                        sx={{
+                          gridRow: "3 / 4",
+                          gridColumn: "2 / 3",
+                        }}
+                      >
+                        {visit.status}
+                      </Typography>
+                    </Grid>
                   </CardContent>
-                  <CardMedia
-                    component="img"
-                    place
+
+                  <CardActions
                     sx={{
-                      alignSelf: "center",
-                      gridRow: "1/3",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
                       gridColumn: "1/3",
                     }}
-                    image="https://source.unsplash.com/random"
-                  />
-                  <CardActions sx={{ gridColumn: "1/3" }}>
+                  >
                     <Button
+                      onClick={() => {
+                        jointVisit(visit);
+                      }}
                       disabled={isAfterVisit(visit.visit_date)}
                       size="small"
+                      variant="outlined"
+                      sx={{
+                        gridColumn: "1/2",
+                      }}
                     >
                       Join
                     </Button>
                     <Button
+                      onClick={() => {
+                        cancelVisit(visit);
+                      }}
                       disabled={isAfterVisit(visit.visit_date)}
                       size="small"
+                      variant="outlined"
                       color="error"
+                      sx={{
+                        gridColumn: "2/3",
+                      }}
                     >
                       Cancel
                     </Button>

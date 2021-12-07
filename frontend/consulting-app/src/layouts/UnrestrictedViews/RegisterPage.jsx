@@ -89,7 +89,7 @@ export default function SignIn() {
       const loginAfterRegisterResponse = await loginHandler(email, password);
       dispatch(accountActions.updateTokens(loginAfterRegisterResponse.data));
       console.log(loginAfterRegisterResponse);
-      history.push("/patient");
+      history.push("/");
     }
   };
 

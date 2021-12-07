@@ -9,25 +9,31 @@ import {
   Hidden,
   Paper,
 } from "@mui/material";
-
+import { useHistory } from "react-router-dom";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { useEffect } from "react";
 import { useState } from "react";
 import authAxios from "../../Auth/auth-axios";
+import { useDispatch, useSelector } from "react-redux";
 import { SearchField } from "../../components/NavBar/SearchField";
 import { SelectSpecs } from "../../components/NavBar/SpecializationSelect";
+import { visitActions } from "../../stores/redux-store/slices/visit-slice";
+
 let specializations = { data: [] };
 let doctors = { data: [] };
 
 export const SelectDoctorPatient = (props) => {
+  const visitState = useSelector((state) => state.visit);
+  const dispatch = useDispatch();
   const [canceled, setCanceled] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [specialization, setSpecialization] = useState("brak");
-  const [isNameTypedIn, setIsNameTypedIn] = useState(false);
+  const [name, setName] = useState("brak");
   const [parameters, setParameters] = useState({});
 
+  const history = useHistory();
   useEffect(() => {
     if (isLoaded) {
       return () => {};
@@ -56,9 +62,7 @@ export const SelectDoctorPatient = (props) => {
     console.log("nameTypedIn!");
     setIsLoaded(false);
     return () => {};
-  }, [isNameTypedIn]);
-
-  console.log("XD");
+  }, [name]);
 
   const getDate = (dateString) => {
     let b = dateString.split(/\D/);
@@ -75,6 +79,32 @@ export const SelectDoctorPatient = (props) => {
       specialization: event.target.value,
     }));
     console.log("SET:", event.target.value);
+  };
+
+  const searchByName = (event) => {
+    event.preventDefault();
+    setParameters((prevParams) => ({}));
+    let data = new FormData(event.currentTarget);
+    let doctor = data.get("docname");
+    if (doctor.split(" ").length > 1) {
+      setParameters((prevParams) => ({
+        ...prevParams,
+        first_name: doctor.split(" ")[0],
+        last_name: doctor.split(" ")[1],
+      }));
+    } else {
+      setParameters((prevParams) => ({
+        ...prevParams,
+        last_name: doctor,
+      }));
+    }
+
+    setName(doctor);
+  };
+
+  const selectDoctorAndRedirect = (props) => {
+    dispatch(visitActions.updateDoctor({ doctorId: props }));
+    history.push("/patient/meeting/select-date");
   };
 
   return (
@@ -103,7 +133,7 @@ export const SelectDoctorPatient = (props) => {
             spacing={2}
             justifyContent="center"
           ></Stack>
-          <SearchField />
+          <SearchField {...{ onSubmit: searchByName }} />
           <SelectSpecs
             {...{
               selectSpecialization: selectSpecialization,
@@ -147,9 +177,6 @@ export const SelectDoctorPatient = (props) => {
                         </Paper>
                       ))}
                     </Grid>
-
-                    <Typography>XD3</Typography>
-                    <Typography>XD4</Typography>
                   </CardContent>
                   <CardMedia
                     component="img"
@@ -162,9 +189,14 @@ export const SelectDoctorPatient = (props) => {
                     image="https://source.unsplash.com/random"
                   />
                   <CardActions sx={{}}>
-                    <Button size="large">Join</Button>
-                    <Button size="small" color="error">
-                      Cancel
+                    <Button
+                      onClick={() => {
+                        selectDoctorAndRedirect(doc.id);
+                      }}
+                      size="large"
+                      color="success"
+                    >
+                      Umów wizytę
                     </Button>
                   </CardActions>
                 </Card>
@@ -174,12 +206,22 @@ export const SelectDoctorPatient = (props) => {
                   sx={{
                     height: "100%",
                     display: "grid",
-                    // gridTemplateColumns: "80% 20%",
-                    // gridTemplateRows: "auto auto",
+                    gridTemplateColumns: "80% 20%",
+                    gridTemplateRows: "auto auto",
                     placeSelf: "center",
                   }}
                 >
-                  <CardContent>
+                  <CardMedia
+                    component="img"
+                    place
+                    sx={{
+                      alignSelf: "center",
+                      gridRow: "1/3",
+                      gridColumn: "1/3",
+                    }}
+                    image="https://source.unsplash.com/random"
+                  />
+                  <CardContent sx={{ gridColumn: "1/4" }}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {doc.doctors_id.academic_title} {doc.first_name}{" "}
                       {doc.last_name}
@@ -189,6 +231,7 @@ export const SelectDoctorPatient = (props) => {
                       sx={{
                         paddingBottom: "5px",
                         gridTemplateColumns: "1fr 1fr 1fr",
+                        gridTemplateRows: "1fr 1fr",
                         gridGap: "5px",
                       }}
                     >
@@ -199,20 +242,23 @@ export const SelectDoctorPatient = (props) => {
                       ))}
                     </Grid>
                   </CardContent>
-                  {/* <CardMedia
-                    component="img"
-                    place
+
+                  <CardActions
                     sx={{
-                      alignSelf: "center",
-                      gridRow: "1/3",
+                      marginLeft: "10px",
+                      gridRow: "2/3",
                       gridColumn: "1/3",
                     }}
-                    image="https://source.unsplash.com/random"
-                  /> */}
-                  <CardActions sx={{}}>
-                    <Button size="small">Join</Button>
-                    <Button size="small" color="error">
-                      Cancel
+                  >
+                    <Button
+                      onClick={() => {
+                        selectDoctorAndRedirect(doc.id);
+                      }}
+                      size="small"
+                      color="success"
+                      variant="contained"
+                    >
+                      Umów wizytę
                     </Button>
                   </CardActions>
                 </Card>

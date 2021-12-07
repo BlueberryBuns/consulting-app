@@ -4,12 +4,14 @@ import functools
 import json
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from django.contrib.auth import get_user_model
 from dateutil.parser import parse
 from datetime import datetime
 from django.core.exceptions import SuspiciousOperation
 from rest_framework.generics import (
     CreateAPIView,
     GenericAPIView,
+    ListAPIView,
     RetrieveUpdateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
@@ -30,10 +32,37 @@ from .models import Visit
 from .serializers import (
     StandardVisitSerializer,
     SafeListVisitSerializer,
+    SafeCheckVisitSerializer,
     UnsafeListVisitSerializer,
 )
 
 from .utils import ParametrizedRetriveValidator
+
+
+class SafeVisitCheckApiView(ListAPIView):
+    permission_classes = [PatientPermission]
+    serializer_class = SafeCheckVisitSerializer
+
+    queryset = Visit.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        if doc_id := request.GET.get("doctorid", ""):
+            user = get_user_model().objects.get(id=doc_id)
+            if user is not None:
+                if not user.is_doctor:
+                    return Response({"message": "You dont have access to retrieve the data",},
+                                status=403,
+                                exception=SuspiciousOperation(
+                                f"User: {request.user.id} tried retrieve protected data"
+                            ))
+            self.queryset = self.queryset.filter(atendees__in=[doc_id])
+        if date_lookup := request.GET.get("datelookup", ""):
+            self.queryset = self.queryset.filter(visit_date__gte=date_lookup)
+        if date_lookdown := request.GET.get("datelookdown", ""):
+            self.queryset = self.queryset.filter(visit_date__lte=date_lookdown)
+
+        
+        return self.list(request, *args, **kwargs)
 
 
 class ListVisitPatientDoctorAPIView(RetrieveModelMixin,

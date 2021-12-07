@@ -74,20 +74,27 @@ export default function Album() {
               justifyContent="center"
             >
               {!authState.isAuthenticated ? (
-                <ButtonLink
-                  to={"/register"}
-                  text={"Załóż konto"}
-                  variant={"contained"}
-                />
+                <>
+                  <ButtonLink
+                    to={"/register"}
+                    text={"Załóż konto"}
+                    variant={"contained"}
+                  />
+                  <ButtonLink
+                    to={"/doctors"}
+                    text={"Przejrzyj lekarzy"}
+                    color={"inherit"}
+                    variant={"outlined"}
+                  />
+                </>
               ) : (
-                <></>
+                <ButtonLink
+                  to={"/patient/meeting/browse-doctors"}
+                  text={"Umów wizytę"}
+                  color={"inherit"}
+                  variant={"outlined"}
+                />
               )}
-              <ButtonLink
-                to={"/doctors"}
-                text={"Przejrzyj lekarzy"}
-                color={"inherit"}
-                variant={"outlined"}
-              />
             </Stack>
           </Container>
         </Box>

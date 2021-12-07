@@ -12,6 +12,9 @@ import {
   ModeratorRoute,
   PatRoute,
 } from "../RouteTypes/RouteTypes";
+import { Visits } from "../patient/Visits";
+import { SelectDoctorPatient } from "../patient/SelectDoctor";
+import { SelectDate } from "../patient/SelectDate";
 import { DoctorModule } from "./DoctorModule";
 import { ModeratorModule } from "./ModeratorModule";
 import { PatientModule } from "./PatientModule";
@@ -91,10 +94,49 @@ const Application = () => {
             path="/doctors"
             render={(props) => <div>Doctors</div>} //<LandingPageTMP {...props} />}
           />
-          <PatientRoutes
-            component={(props) => <PatientModule {...props} />}
-            path="/patient"
-          />
+
+          <Route path="/patient">
+            {authState.isAuthenticated ? (
+              <>
+                <Route path="/patient/visits">
+                  <Visits />
+                </Route>
+                <Route path="/patient/meeting/browse-doctors">
+                  <SelectDoctorPatient />
+                </Route>
+                <Route path="/patient/meeting/select-date">
+                  <SelectDate />
+                </Route>
+                <Route path="/patient/visit/consultation">
+                  <SelectDate />
+                </Route>
+              </>
+            ) : (
+              <Redirect to="/login" />
+            )}
+          </Route>
+
+          {authState.isDoctor || authState.isAdmin ? (
+            <Route path="/doctor/visits">
+              <div>Wizyty</div>
+            </Route>
+          ) : (
+            <Redirect to="/" />
+          )}
+          {authState.isModerator || authState.isAdmin ? (
+            <Route path="/moderator/visits">
+              <div>Wizyty</div>
+            </Route>
+          ) : (
+            <Redirect to="/" />
+          )}
+          {authState.isAdmin ? (
+            <Route path="/admin">
+              <div>Wizyty</div>
+            </Route>
+          ) : (
+            <Redirect to="/" />
+          )}
           {/* <Route
             exact
             path="/"

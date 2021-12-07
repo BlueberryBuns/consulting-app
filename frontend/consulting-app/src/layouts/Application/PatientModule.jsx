@@ -5,21 +5,15 @@ import { Visits } from "../patient/Visits";
 const PatientModule = (props) => {
   return (
     <>
-      <Route
-        exact
-        path="/patient/visits"
-        render={(props) => <Visits />}
-      ></Route>
-      <Route
-        exact
-        path="/patient/meeting/browse-doctors"
-        render={(props) => <SelectDoctorPatient />}
-      ></Route>
-      <Route
-        exact
-        path="/patient/meeting/select-date"
-        render={(props) => <SelectDate />}
-      ></Route>
+      <Route path="/patient/visits">
+        <Visits />
+      </Route>
+      <Route path="/patient/meeting/browse-doctors">
+        <SelectDoctorPatient />
+      </Route>
+      <Route path="/patient/meeting/select-date">
+        <SelectDate />
+      </Route>
       <Route exact path="*">
         <Redirect to="/patient/visits" />
       </Route>

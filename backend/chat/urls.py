@@ -7,11 +7,13 @@ from .views import (
     VisitDoctorAPIView,
     UpdateCreateVisitPatientAPIView,
     VisitModeratorAPIView,
+    SafeVisitCheckApiView,
 )
 
 endpoint_name = "api"
 
 urlpatterns = [
+    path(f"{endpoint_name}/patient/doctor/visits", SafeVisitCheckApiView.as_view()),
     # Patient is finished, TESTED 
     # path(f"{endpoint_name}/patient/visits/",
     #     VisitPatientAPIView.as_view()),
