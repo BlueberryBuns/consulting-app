@@ -5,7 +5,7 @@ if (url === "http://localhost:3001") {
   console.log(url);
   url = "http://localhost:8000";
 }
-
+console.log(url);
 const authAxios = axios.create({
   baseURL: url,
   headers: {

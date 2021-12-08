@@ -9,7 +9,7 @@ from rest_framework.serializers import (
     Serializer,
     ValidationError
 )
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenVerifySerializer
 from django.contrib.auth import get_user_model
 from core.models import (
     Doctor,
@@ -23,7 +23,7 @@ __all__ = ("UserSerializer", "LoginSerializer")
 class SpecializationSerializer(ModelSerializer):
     class Meta:
         model = Specialization
-        fields = ("specialization",)
+        fields = "__all__"
 
 
 class ListUsersSerializer(ModelSerializer):
@@ -135,6 +135,7 @@ class DoctorSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
+            "id",
             "first_name",
             "last_name",
             "doctors_id",
@@ -168,6 +169,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         data["role"] = self.user.role_id
         data["firstName"] = self.user.first_name
         data["lastName"] = self.user.last_name
+        data["userId"] = self.user.id
         return data
 
 class ImageSerializer(ModelSerializer): ...

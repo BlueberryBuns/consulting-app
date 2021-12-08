@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -40,7 +40,8 @@ from core.serializers import (
 from consulting_app.permissions import (
     DoctorPermission,
     ModeratorPermission,
-    AdminPermission
+    AdminPermission,
+    PatientPermission
 )
 
 # class GetDoctorsAPIView(ListAPIView):
@@ -125,25 +126,37 @@ class ListDoctorAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     queryset = User.objects.exclude(doctors_id=None)
 
     def get(self, request, *args, **kwargs):
+        print(kwargs)
         if pk := kwargs.get("pk"):
             print(pk)
             return self.retrieve(self, request, *args, **kwargs)
-        if first_name := request.data.get("first_name"):
+        if spec := request.GET.get("specialization", ""):
+            print(spec)
+            self.queryset = self.queryset.filter(
+                doctors_id__specializations__in=[spec]
+            )
+        if first_name := request.GET.get("first_name", ""):
             print(first_name)
             self.queryset = self.queryset.filter(first_name__contains=first_name)
-        if last_name := request.data.get("last_name"):
+        if last_name := request.GET.get("last_name", ""):
             print(last_name)
             self.queryset = self.queryset.filter(last_name__contains=last_name)
-        if academic_title := request.data.get("academic_title"):
+        if academic_title := request.GET.get("academic_title", ""):
             print(academic_title)
             self.queryset = self.queryset.filter(doctors_id__academic_title=academic_title)
-        if specializations := request.data.get("specializations"):
-            print(specializations)
-            self.queryset = self.queryset.filter(
-                doctors_id__specializations__in=specializations
-            )
 
         return self.list(request, *args, **kwargs)
+
+class UserRole(GenericAPIView):
+    permission_classes = [PatientPermission]
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response({
+            "role": request.user.role_id,
+            "firstName": request.user.first_name,
+            "lastName": request.user.last_name,
+        }, status=200)
 
 
 class SignUpAPIView(CreateAPIView):
@@ -152,18 +165,19 @@ class SignUpAPIView(CreateAPIView):
     queryset = User.objects.all()
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         return super().post(request, *args, **kwargs)
 
 
 class SpecializationsAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = SpecializationSerializer
-    queryset = Specialization.objects.all()
+    queryset = Specialization.objects.all().order_by("specialization")
 
     def get(self, request, *args, **kwargs):
         if kwargs.get("pk"):
             return self.retrieve(self, request, *args, **kwargs)
-        if specialization := request.data.get("specialization"):
+        if specialization := request.GET.get("specialization", ""):
             self.queryset = self.queryset.filter(specialization__contains=specialization)
 
         return self.list(request, *args, **kwargs)

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 from .views import (
@@ -13,6 +13,7 @@ from .views import (
     GetDocsAPIView,
     # GetDoctorsAPIView,
     UpdatePasswordAPIView,
+    UserRole
 )
 
 endpoint_name = "api"
@@ -25,9 +26,9 @@ urlpatterns = [
     # Tested and corrected
     path(f"{endpoint_name}/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path(f"{endpoint_name}/token/verify/", TokenVerifyView.as_view(), name="verify"),
-
+    path(f"{endpoint_name}/role/", UserRole.as_view(), name="verify"),
     # Tested and corrected
-    path(f"{endpoint_name}/doctors/", ListDoctorAPIView.as_view()),
+    path(fr"{endpoint_name}/doctors/", ListDoctorAPIView.as_view()),
     path(f"{endpoint_name}/doctors/<slug:pk>/", ListDoctorAPIView.as_view()),
 
     # Tested it might be missing some endpoints

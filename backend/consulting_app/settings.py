@@ -181,17 +181,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    CURRENT_DOMAIN,
-    "https://192.168.50.239:3000",
-    "http://application.blueberrybuns.com:12345",
-    "https://application.blueberrybuns.com:12345",
+    "https://application.blueberrybuns.com",
+    "https://application.blueberrybuns.com/login",
+    "https://application.blueberrybuns.com/register",
+    "https://application.blueberrybuns.com/patient/visits",
+    "https://application.blueberrybuns.com/patient/meeting/browse-doctors",
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    CURRENT_DOMAIN,
-    "https://192.168.50.239:3000",
-    "http://application.blueberrybuns.com:12345",
-    "https://application.blueberrybuns.com:12345",
+    "https://application.blueberrybuns.com",
+    "https://application.blueberrybuns.com/login",
+    "https://application.blueberrybuns.com/register",
+    "https://application.blueberrybuns.com/patient/visits",
+    "https://application.blueberrybuns.com/patient/meeting/browse-doctors",
 ]
 
 
