@@ -9,16 +9,12 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import configureMediaStore from "./stores/custom-store/media-store";
 configureMediaStore();
 
-const theme = createTheme();
-
 const routing = (
-  <ThemeProvider theme={theme}>
-    <Provider store={reduxStore}>
-      <CookiesProvider>
-        <Application />
-      </CookiesProvider>
-    </Provider>
-  </ThemeProvider>
+  <Provider store={reduxStore}>
+    <CookiesProvider>
+      <Application />
+    </CookiesProvider>
+  </Provider>
 );
 
 ReactDOM.render(routing, document.getElementById("root"));

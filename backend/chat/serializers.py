@@ -6,7 +6,7 @@ from chat.models import Visit
 
 class SafeListVisitSerializer(ModelSerializer):
 
-    atendees = SafeUserSerializer(many=True)
+    atendees = ListUsersSerializer(many=True)
 
     class Meta:
         model = Visit
@@ -18,6 +18,13 @@ class SafeListVisitSerializer(ModelSerializer):
             "updated",
             "visit_date",
             "atendees",
+        )
+
+class SafeCheckVisitSerializer(ModelSerializer):
+    class Meta:
+        model = Visit
+        fields = (
+            "visit_date",
         )
 
 class UnsafeListVisitSerializer(ModelSerializer):

@@ -6,14 +6,28 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { Redirect, useHistory } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import authAxios from "../../Auth/auth-axios";
+import { useDispatch } from "react-redux";
+import { accountActions } from "../../stores/redux-store/slices/auth-slice";
+import { useSelector } from "react-redux";
+import ButtonLink from "../../components/Buttons/CustomLinkButton";
 
-function Copyright(props) {
+const loginHandler = async (email, password) => {
+  console.log("Sent user login data");
+  const res = await authAxios.post("/api/login/", {
+    email: email,
+    password: password,
+  });
+  return res;
+};
+
+const Copyright = (props) => {
   return (
     <Typography
       variant="body2"
@@ -29,45 +43,39 @@ function Copyright(props) {
       {"."}
     </Typography>
   );
-}
+};
 
 const theme = createTheme();
 
-export default function SignInSide() {
-  const handleSubmit = (event) => {
+export default function SignIn() {
+  const dispatch = useDispatch();
+  const authState = useSelector((state) => state.account);
+  let history = useHistory();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
+    let email = data.get("email");
+    let password = data.get("password");
+
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      email,
+      password,
     });
+    const response = await loginHandler(email, password);
+    console.log(response);
+    if (response.statusText === "OK") {
+      dispatch(accountActions.updateTokens(response.data));
+      history.push("/");
+    }
   };
 
-  return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random)",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: (t) =>
-            t.palette.mode === "light"
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+  return !authState.isAuthenticated ? (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
         <Box
           sx={{
-            my: 8,
-            mx: 4,
+            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -77,12 +85,12 @@ export default function SignInSide() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Logowanie
           </Typography>
           <Box
             component="form"
-            noValidate
             onSubmit={handleSubmit}
+            noValidate
             sx={{ mt: 1 }}
           >
             <TextField
@@ -90,7 +98,7 @@ export default function SignInSide() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Adres email"
               name="email"
               autoComplete="email"
               autoFocus
@@ -100,39 +108,37 @@ export default function SignInSide() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Hasło"
               type="password"
               id="password"
               autoComplete="current-password"
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="Zapamiętaj mnie"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 0 }}
             >
-              Sign In
+              Zaloguj się
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-            <Copyright sx={{ mt: 5 }} />
+            <ButtonLink
+              to={"/register"}
+              text={"Nie masz konta? Zarejestruj się!"}
+              color="success"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 1, mb: 1 }}
+            />
           </Box>
         </Box>
-      </Grid>
-    </Grid>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
+  ) : (
+    <Redirect to="/patient" />
   );
 }

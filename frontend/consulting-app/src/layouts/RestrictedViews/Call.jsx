@@ -42,17 +42,12 @@ const CallView = () => {
   useEffect(() => {
     const getMedia = async () => {
       try {
-        console.log(navigator);
         stream = await navigator.mediaDevices.getUserMedia(CAMERA_CONFIG);
-        console.log(videoRef);
-        console.log(stream);
       } catch (error) {
-        console.log(error);
       } finally {
         if (videoRef) {
           videoRef.current.srcObject = stream;
           isCameraSet = true;
-          console.log(videoRef);
         }
       }
     };
@@ -61,7 +56,6 @@ const CallView = () => {
 
   let webSocketScheme = window.location.protocol === "https:" ? "wss:" : "ws:";
   let url = `${webSocketScheme}//${window.location.host}`;
-  console.log(url);
 
   let wSocketAddr = `${url}/ws/chat/room/123/?token=${authState.accessToken}`;
   const ws = new WebSocket(wSocketAddr);
