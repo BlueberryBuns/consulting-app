@@ -62,6 +62,7 @@ export default function SignIn() {
       password,
     });
     const response = await loginHandler(email, password);
+    console.log(response);
     if (response.statusText === "OK") {
       dispatch(accountActions.updateTokens(response.data));
       history.push("/");

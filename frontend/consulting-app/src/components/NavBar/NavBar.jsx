@@ -59,31 +59,6 @@ const NavBar = () => {
     },
   ];
 
-  const moderatorMenu = [
-    {
-      type: "button",
-      name: "Zarządzaj wizytami",
-      url: "/moderator/visits",
-    },
-    {
-      type: "button",
-      name: "Dodaj wizytę",
-      url: "/moderator/add-visit",
-    },
-    {
-      type: "button",
-      name: "Dodaj doktora",
-      url: "/moderator/add-doctor",
-    },
-  ];
-  const adminMenu = [
-    {
-      type: "button",
-      name: "Dodaj moderatora",
-      url: "/admin/add-moderator",
-    },
-  ];
-
   return (
     <AppBar position="relative" style={{ background: "purple" }}>
       <Toolbar>
@@ -195,40 +170,6 @@ const NavBar = () => {
             </Typography>
           </Paper>
           {doctorMenu.map((item) => (
-            <SliderButton to={item.url} text={item.name}></SliderButton>
-          ))}
-          <Paper
-            elevation={0}
-            sx={{
-              borderBottom: "1px solid black",
-              borderRadius: "0 0 0 0 !important",
-              display: "grid",
-              placeItems: "center",
-              paddingTop: "30px",
-            }}
-          >
-            <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
-              Panel Moderatora
-            </Typography>
-          </Paper>
-          {moderatorMenu.map((item) => (
-            <SliderButton to={item.url} text={item.name}></SliderButton>
-          ))}
-          <Paper
-            elevation={0}
-            sx={{
-              borderBottom: "1px solid black",
-              borderRadius: "0 0 0 0 !important",
-              display: "grid",
-              placeItems: "center",
-              paddingTop: "30px",
-            }}
-          >
-            <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
-              Panel Admina
-            </Typography>
-          </Paper>
-          {adminMenu.map((item) => (
             <SliderButton to={item.url} text={item.name}></SliderButton>
           ))}
           <Button

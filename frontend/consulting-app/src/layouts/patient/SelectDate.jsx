@@ -8,10 +8,11 @@ import {
   Button,
   Hidden,
   Paper,
+  Modal,
 } from "@mui/material";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -33,6 +34,22 @@ export const SelectDate = (props) => {
   const [scheduledVisists, setScheduledVisists] = useState();
   const [parameters, setParameters] = useState({});
   const [dataReady, setDataReady] = useState(false);
+  const [viableVisitTerms, setViableVisitTerms] = useState(false);
+  const [openPositive, setOpenPositive] = useState(false);
+  const [openNegative, setOpenNegative] = useState(false);
+  const history = useHistory();
+
+  const handleOpenPositive = () => setOpenPositive(true);
+  const handleClosePositive = () => {
+    setOpenPositive(false);
+    history.push("/");
+  };
+
+  const handleOpenNegative = () => setOpenNegative(true);
+  const handleCloseNegative = () => {
+    setOpenNegative(false);
+    history.push("/");
+  };
 
   useEffect(() => {
     const getDoctorData = async () => {
@@ -73,11 +90,12 @@ export const SelectDate = (props) => {
   }, [isLoaded, parameters, dataReady]);
 
   useEffect(() => {
-    console.log("BBBBBBBBBBBBBBBBBBBBBBBBBB");
     if (scheduledVisists && visitArray) {
       checkViableDates(scheduledVisists, visitArray);
     }
   }, [visitArray, scheduledVisists]);
+
+  useEffect(() => {}, [viableVisitTerms]);
 
   let meetingDatesArray;
 
@@ -101,6 +119,7 @@ export const SelectDate = (props) => {
   let endingDate;
 
   const handleDateChange = (props) => {
+    setSelectedDate(new Date(props));
     beginningDate = new Date(
       props.getFullYear(),
       props.getMonth(),
@@ -114,7 +133,7 @@ export const SelectDate = (props) => {
       props.getFullYear(),
       props.getMonth(),
       props.getDate(),
-      16,
+      14,
       0,
       0,
       0
@@ -127,20 +146,45 @@ export const SelectDate = (props) => {
       datelookup: beginningDate,
       datelookdown: endingDate,
     }));
-    console.log("XD");
     setDataReady(true);
   };
 
   const checkViableDates = (plannedSchedule, defaultSchedule) => {
     let viableTerms = [];
+    let isTaken = false;
     console.log("AAAAAAAAAAAAAAAAAAAAA");
     console.log(plannedSchedule, defaultSchedule);
-    plannedSchedule.map((p) => {
-      defaultSchedule.map((d) => {
-        console.log(p);
-        console.log(d);
+    defaultSchedule.map((p) => {
+      isTaken = false;
+      plannedSchedule.map((d) => {
+        if (p.toString() === new Date(d.visit_date).toString()) {
+          isTaken = true;
+          console.log("takie same1!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
       });
+      if (!isTaken) {
+        viableTerms.push(p);
+      }
     });
+    console.log(viableTerms);
+    setViableVisitTerms(viableTerms);
+  };
+
+  const sendVisitRequest = (date, doctor) => {
+    handleOpenPositive();
+    console.log(date, doctor);
+  };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 200,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
   };
 
   return (
@@ -153,7 +197,40 @@ export const SelectDate = (props) => {
           pb: 6,
         }}
       >
-        <Container maxWidth="md">
+        <Hidden mdDown>
+          <Modal
+            width="100%"
+            open={openPositive}
+            onClose={handleClosePositive}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Operacja powiodła się!
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Dziękujemy za korzystanie z aplikacji.
+              </Typography>
+            </Box>
+          </Modal>
+          <Modal
+            open={openNegative}
+            onClose={handleCloseNegative}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Operacja nie powiodła się!
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Wystąpił problem przy dodwaniu wizyty.
+              </Typography>
+            </Box>
+          </Modal>
+        </Hidden>
+        <Container sx={{ display: "grid" }} maxWidth="md">
           <Typography
             component="h4"
             variant="h4"
@@ -172,221 +249,115 @@ export const SelectDate = (props) => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
               label="Date desktop"
-              inputFormat="MM/dd/yyyy"
+              inputFormat="dd/MM/yyyy"
               value={selectedDate}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
+              textFieldStyle={{ width: "100%" }}
             />
           </LocalizationProvider>
         </Container>
       </Box>
-      <Container sx={{ py: 1 }} maxWidth="md">
-        {/* End hero unit */}
-        {visitArray ? <div>11</div> : <div>14</div>}
-        {doctorVisits ? <div>12</div> : <div>15</div>}
+      <Container sx={{ py: 1, display: "grid" }} maxWidth="md">
         {visitArray ? (
-          doctorVisits ? (
-            doctorVisits.data.map((visit) => <div>xd</div>)
-          ) : (
-            <div>2222</div>
-          )
-        ) : (
-          <div>123</div>
-        )}
-
-        {visitArray ? (
-          <div>
-            {visitArray.map((v) =>
+          <Grid
+            container
+            sx={{ display: "grid", rowGap: "5px", gridTemplateColumns: "1fr" }}
+          >
+            {/* {visitArray.map((v) =>
               doctorVisits ? (
                 doctorVisits.data.map((visit) =>
                   v.toString() == new Date(visit.visit_date).toString() ? (
-                    <div>Tutaj nie wyświetlać!!!</div>
-                  ) : (
-                    <div>{v.toString()}</div>
-                  )
-                )
+                    <></>
+                  ) : ( */}
+
+            {viableVisitTerms ? (
+              viableVisitTerms.length === 0 ? (
+                <div>Brak wolnych wizyt</div>
               ) : (
-                <div>3333</div>
+                viableVisitTerms.map((v) => (
+                  <Card
+                    sx={{
+                      height: "100%",
+                      display: "grid",
+                      gridTemplateRows: "auto",
+                      width: "100%",
+                      placeSelf: "center",
+                    }}
+                  >
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Wolny termin konsultacji
+                      </Typography>
+                      <Grid
+                        container
+                        sx={{
+                          marginTop: "20px",
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gridTemplateRows: "1fr 1fr 1fr",
+                          gridGap: "6px",
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontWeight: 600,
+                            gridRow: "1 / 2",
+                            gridColumn: "1 / 2",
+                          }}
+                        >
+                          Termin konsultacji:
+                        </Typography>
+                        <Typography
+                          sx={{
+                            gridRow: "1 / 2",
+                            gridColumn: "2 / 3",
+                          }}
+                        >
+                          {v.getDate()}-{v.getMonth() + 1}-{v.getFullYear()}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontWeight: 600,
+                            gridRow: "2 / 3",
+                            gridColumn: "1 / 2",
+                          }}
+                        >
+                          Godzina:{" "}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            gridRow: "2 / 3",
+                            gridColumn: "2 / 3",
+                          }}
+                        >
+                          {v.getHours()}:
+                          {v.getMinutes() ? v.getMinutes() : "00"}
+                        </Typography>
+                      </Grid>
+                    </CardContent>
+                    <CardActions sx={{}}>
+                      <Button
+                        onClick={() => {
+                          return sendVisitRequest(v, visitState.doctorId);
+                        }}
+                        color="success"
+                        variant="outlined"
+                        sx={{ width: "100%" }}
+                      >
+                        Zarezerwuj
+                      </Button>
+                    </CardActions>
+                  </Card>
+                ))
               )
-            )}
-          </div>
-        ) : (
-          <div>321</div>
-        )}
-
-        {visitArray ? (
-          visitArray.map((freeDate) =>
-            doctorVisits ? (
-              doctorVisits.data.map((plannedVisit) => (
-                <div>{new Date(plannedVisit.visit_date).toString()}</div>
-              ))
             ) : (
-              <div>XD</div>
-            )
-          )
+              <></>
+            )}
+          </Grid>
         ) : (
-          <div>14</div>
+          <></>
         )}
-        {console.log(doctorVisits)}
-        <Grid container>
-          {visitArray ? (
-            visitArray.map((visit) => (
-              <Card
-                sx={{
-                  height: "100%",
-                  display: "grid",
-                  gridTemplateColumns: "80% 20%",
-                  gridTemplateRows: "auto auto",
-                  placeSelf: "center",
-                }}
-              >
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    Wyzyta lekarska godzina
-                  </Typography>
-                  <Grid
-                    container
-                    sx={{
-                      paddingBottom: "5px",
-                      gridTemplateColumns: "1fr 1fr 1fr",
-                      gridGap: "5px",
-                    }}
-                  >
-                    <Paper elevation={3} sx={{ padding: "8px" }}>
-                      13:30
-                    </Paper>
-                  </Grid>
-                </CardContent>
-                <CardActions sx={{}}>
-                  <Button size="large" color="success">
-                    Umów wizytę
-                  </Button>
-                </CardActions>
-              </Card>
-            ))
-          ) : (
-            <></>
-          )}
-          {/* {doctors.data.map((doc) => (
-            <Grid item key={doc.id} xs={12} sm={12} md={12}>
-              <Hidden smDown>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "grid",
-                    gridTemplateColumns: "80% 20%",
-                    gridTemplateRows: "auto auto",
-                    placeSelf: "center",
-                  }}
-                >
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {doc.doctors_id.academic_title} {doc.first_name}{" "}
-                      {doc.last_name}
-                    </Typography>
-                    <Grid
-                      container
-                      sx={{
-                        paddingBottom: "5px",
-                        gridTemplateColumns: "1fr 1fr 1fr",
-                        gridGap: "5px",
-                      }}
-                    >
-                      {doc.doctors_id.specializations.map((spec) => (
-                        <Paper elevation={3} sx={{ padding: "8px" }}>
-                          {spec.specialization}
-                        </Paper>
-                      ))}
-                    </Grid>
-                  </CardContent>
-                  <CardMedia
-                    component="img"
-                    place
-                    sx={{
-                      alignSelf: "center",
-                      gridRow: "1/3",
-                      gridColumn: "2/3",
-                    }}
-                    image="https://source.unsplash.com/random"
-                  />
-                  <CardActions sx={{}}>
-                    <Button
-                      onClick={() => {
-                        selectDoctorAndRedirect(doc.id);
-                      }}
-                      size="large"
-                      color="success"
-                    >
-                      Umów wizytę
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Hidden>
-              <Hidden smUp>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "grid",
-                    gridTemplateColumns: "80% 20%",
-                    gridTemplateRows: "auto auto",
-                    placeSelf: "center",
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    place
-                    sx={{
-                      alignSelf: "center",
-                      gridRow: "1/3",
-                      gridColumn: "1/3",
-                    }}
-                    image="https://source.unsplash.com/random"
-                  />
-                  <CardContent sx={{ gridColumn: "1/4" }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {doc.doctors_id.academic_title} {doc.first_name}{" "}
-                      {doc.last_name}
-                    </Typography>
-                    <Grid
-                      container
-                      sx={{
-                        paddingBottom: "5px",
-                        gridTemplateColumns: "1fr 1fr 1fr",
-                        gridTemplateRows: "1fr 1fr",
-                        gridGap: "5px",
-                      }}
-                    >
-                      {doc.doctors_id.specializations.map((spec) => (
-                        <Paper elevation={3} sx={{ padding: "8px" }}>
-                          {spec.specialization}
-                        </Paper>
-                      ))}
-                    </Grid>
-                  </CardContent>
-
-                  <CardActions
-                    sx={{
-                      marginLeft: "10px",
-                      gridRow: "2/3",
-                      gridColumn: "1/3",
-                    }}
-                  >
-                    <Button
-                      onClick={() => {
-                        selectDoctorAndRedirect(doc.id);
-                      }}
-                      size="small"
-                      color="success"
-                      variant="contained"
-                    >
-                      Umów wizytę
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Hidden>
-            </Grid> 
-          ))}*/}
-        </Grid>
       </Container>
     </main>
   );

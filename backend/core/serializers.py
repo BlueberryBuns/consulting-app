@@ -169,6 +169,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         data["role"] = self.user.role_id
         data["firstName"] = self.user.first_name
         data["lastName"] = self.user.last_name
+        data["userId"] = self.user.id
         return data
 
 class ImageSerializer(ModelSerializer): ...

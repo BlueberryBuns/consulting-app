@@ -16,7 +16,6 @@ import { Visits } from "../patient/Visits";
 import { SelectDoctorPatient } from "../patient/SelectDoctor";
 import { SelectDate } from "../patient/SelectDate";
 import { DoctorModule } from "./DoctorModule";
-import { ModeratorModule } from "./ModeratorModule";
 import { PatientModule } from "./PatientModule";
 import UnauthorisedModule from "./UnauthorisedApp";
 import LoginPage from "../UnrestrictedViews/LoginPage";
@@ -118,20 +117,6 @@ const Application = () => {
 
           {authState.isDoctor || authState.isAdmin ? (
             <Route path="/doctor/visits">
-              <div>Wizyty</div>
-            </Route>
-          ) : (
-            <Redirect to="/" />
-          )}
-          {authState.isModerator || authState.isAdmin ? (
-            <Route path="/moderator/visits">
-              <div>Wizyty</div>
-            </Route>
-          ) : (
-            <Redirect to="/" />
-          )}
-          {authState.isAdmin ? (
-            <Route path="/admin">
               <div>Wizyty</div>
             </Route>
           ) : (

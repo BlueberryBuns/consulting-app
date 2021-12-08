@@ -129,7 +129,7 @@ export const Visits = (props) => {
                               )
                             )
                           : "N"
-                        : ""}
+                        : " "}
                     </Grid>
                     <Grid
                       container
@@ -206,7 +206,12 @@ export const Visits = (props) => {
                   />
                   <CardActions sx={{}}>
                     <Button
-                      disabled={isAfterVisit(visit.visit_date)}
+                      disabled={() => {
+                        return (
+                          isAfterVisit(visit.visit_date) ||
+                          visit.status !== "CONFIMED"
+                        );
+                      }}
                       size="small"
                     >
                       Join
@@ -334,7 +339,12 @@ export const Visits = (props) => {
                       onClick={() => {
                         jointVisit(visit);
                       }}
-                      disabled={isAfterVisit(visit.visit_date)}
+                      disabled={() => {
+                        return (
+                          isAfterVisit(visit.visit_date) ||
+                          visit.status !== "CONFIMED"
+                        );
+                      }}
                       size="small"
                       variant="outlined"
                       sx={{
