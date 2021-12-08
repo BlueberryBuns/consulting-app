@@ -3,7 +3,6 @@ from django.urls import path, re_path
 from .views import (
     ListVisitPatientDoctorAPIView,
     VisitAPIView,
-    # VisitAdminAPIView,
     VisitDoctorAPIView,
     UpdateCreateVisitPatientAPIView,
     VisitModeratorAPIView,

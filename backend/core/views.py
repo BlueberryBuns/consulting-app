@@ -127,6 +127,7 @@ class ListDoctorAPIView(ListModelMixin, RetrieveModelMixin, GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         print(kwargs)
+        self.queryset = self.queryset.exclude(id=request.user.id)
         if pk := kwargs.get("pk"):
             print(pk)
             return self.retrieve(self, request, *args, **kwargs)

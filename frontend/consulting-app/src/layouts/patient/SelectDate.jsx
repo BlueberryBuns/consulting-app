@@ -28,6 +28,7 @@ let doctorVisits = false;
 
 export const SelectDate = (props) => {
   const visitState = useSelector((state) => state.visit);
+  const authState = useSelector((state) => state.account);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoaded, setIsLoaded] = useState(false);
   const [visitArray, setVisitArray] = useState(false);
@@ -170,9 +171,21 @@ export const SelectDate = (props) => {
     setViableVisitTerms(viableTerms);
   };
 
-  const sendVisitRequest = (date, doctor) => {
-    handleOpenPositive();
-    console.log(date, doctor);
+  const sendVisitRequest = async (date, doctor) => {
+    try {
+      const res = await authAxios.post("/api/patient/visits/", {
+        visit_date: date,
+        atendees: [doctor, authState.userId],
+        requested_doctor: doctor,
+      });
+      console.log(res);
+      if (res.status === 201) {
+        handleOpenPositive();
+      }
+    } catch (err) {
+      handleCloseNegative();
+    }
+    console.log(date, authState.userId, doctor);
   };
 
   const style = {

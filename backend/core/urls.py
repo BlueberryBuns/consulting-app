@@ -11,7 +11,6 @@ from .views import (
     CreateModeratorAPIView,
     SpecializationsAPIView,
     GetDocsAPIView,
-    # GetDoctorsAPIView,
     UpdatePasswordAPIView,
     UserRole
 )

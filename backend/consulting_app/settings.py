@@ -182,18 +182,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
     "https://application.blueberrybuns.com",
-    "https://application.blueberrybuns.com/login",
-    "https://application.blueberrybuns.com/register",
-    "https://application.blueberrybuns.com/patient/visits",
-    "https://application.blueberrybuns.com/patient/meeting/browse-doctors",
+    "http://application.blueberrybuns.com",
 ]
 
 CORS_ORIGIN_WHITELIST = [
     "https://application.blueberrybuns.com",
-    "https://application.blueberrybuns.com/login",
-    "https://application.blueberrybuns.com/register",
-    "https://application.blueberrybuns.com/patient/visits",
-    "https://application.blueberrybuns.com/patient/meeting/browse-doctors",
+    "http://application.blueberrybuns.com",
 ]
 
 

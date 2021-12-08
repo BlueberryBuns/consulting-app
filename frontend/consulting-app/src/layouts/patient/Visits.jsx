@@ -13,14 +13,17 @@ import {
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { useSelector } from "react-redux";
 import { style } from "@mui/system";
 import { useEffect } from "react";
 import { useState } from "react";
 import authAxios from "../../Auth/auth-axios";
+
 let visits = { data: [] };
 export const Visits = (props) => {
   const [canceled, setCanceled] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const authState = useSelector((state) => state.account);
   useEffect(() => {
     if (isLoaded) {
       return () => {};
@@ -49,6 +52,7 @@ export const Visits = (props) => {
 
   const isAfterVisit = (dateString) => {
     let visitDate = getDate(dateString);
+    console.log(!!(new Date(+new Date() + 1000 * 60 * 60 * 3) >= visitDate));
     return !!(new Date(+new Date() + 1000 * 60 * 60 * 3) >= visitDate);
   };
 
@@ -77,7 +81,7 @@ export const Visits = (props) => {
             align="center"
             color="text.primary"
           >
-            Twoje spotkania z lekarzami
+            Twoje spotkania
           </Typography>
 
           <Stack
@@ -105,11 +109,21 @@ export const Visits = (props) => {
                 <Hidden smDown>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {visit.atendees[0].doctors_id
+                      {/* {visit.atendees[0].doctors_id
                         ? visit.atendees[0].doctors_id.academic_title
                         : ""}{" "}
                       {visit.atendees[0].first_name}{" "}
-                      {visit.atendees[0].last_name}
+                      {visit.atendees[0].last_name} */}
+                      {/* {visit.requested_doctor.doctors_id.academic_title === authState.userId? }{" "}
+                      {visit.requested_doctor.first_name}{" "}
+                      {visit.requested_doctor.last_name} */}
+                      {visit.requested_doctor.id === authState.userId
+                        ? visit.atendees.map((a) =>
+                            a.id === authState.userId
+                              ? ""
+                              : `Pacjent ${a.first_name} ${a.last_name}`
+                          )
+                        : `${visit.requested_doctor.doctors_id.academic_title} ${visit.requested_doctor.first_name} ${visit.requested_doctor.last_name}`}
                     </Typography>
                     <Grid
                       container
@@ -119,17 +133,13 @@ export const Visits = (props) => {
                         gridGap: "5px",
                       }}
                     >
-                      {visit.atendees[0].doctors_id
-                        ? visit.atendees[0].doctors_id.specializations
-                          ? visit.atendees[0].doctors_id.specializations.map(
-                              (spec) => (
-                                <Paper elevation={3} sx={{ padding: "8px" }}>
-                                  {spec.specialization}
-                                </Paper>
-                              )
-                            )
-                          : "N"
-                        : " "}
+                      {visit.requested_doctor.doctors_id.specializations.map(
+                        (spec) => (
+                          <Paper elevation={3} sx={{ padding: "8px" }}>
+                            {spec.specialization}
+                          </Paper>
+                        )
+                      )}
                     </Grid>
                     <Grid
                       container
@@ -205,17 +215,27 @@ export const Visits = (props) => {
                     image="https://source.unsplash.com/random"
                   />
                   <CardActions sx={{}}>
-                    <Button
-                      disabled={() => {
-                        return (
-                          isAfterVisit(visit.visit_date) ||
-                          visit.status !== "CONFIMED"
-                        );
-                      }}
-                      size="small"
-                    >
-                      Join
-                    </Button>
+                    {visit.status != "CONFIRMED" ||
+                    isAfterVisit(visit.visit_date) ? (
+                      <Button
+                        onClick={() => {
+                          jointVisit(visit);
+                        }}
+                        disabled={true}
+                        size="small"
+                      >
+                        Dołącz
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          jointVisit(visit);
+                        }}
+                        size="small"
+                      >
+                        Dołącz
+                      </Button>
+                    )}
                     <Button
                       disabled={isAfterVisit(visit.visit_date)}
                       size="small"
@@ -335,24 +355,35 @@ export const Visits = (props) => {
                       gridColumn: "1/3",
                     }}
                   >
-                    <Button
-                      onClick={() => {
-                        jointVisit(visit);
-                      }}
-                      disabled={() => {
-                        return (
-                          isAfterVisit(visit.visit_date) ||
-                          visit.status !== "CONFIMED"
-                        );
-                      }}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        gridColumn: "1/2",
-                      }}
-                    >
-                      Join
-                    </Button>
+                    {visit.status != "CONFIRMED" ||
+                    isAfterVisit(visit.visit_date) ? (
+                      <Button
+                        onClick={() => {
+                          jointVisit(visit);
+                        }}
+                        disabled={true}
+                        size="small"
+                        variant="outlined"
+                        sx={{
+                          gridColumn: "1/2",
+                        }}
+                      >
+                        Dołącz
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          jointVisit(visit);
+                        }}
+                        size="small"
+                        variant="outlined"
+                        sx={{
+                          gridColumn: "1/2",
+                        }}
+                      >
+                        Dołącz
+                      </Button>
+                    )}
                     <Button
                       onClick={() => {
                         cancelVisit(visit);

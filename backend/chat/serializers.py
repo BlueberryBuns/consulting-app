@@ -7,6 +7,7 @@ from chat.models import Visit
 class SafeListVisitSerializer(ModelSerializer):
 
     atendees = ListUsersSerializer(many=True)
+    requested_doctor = SafeUserSerializer(many=False)
 
     class Meta:
         model = Visit
@@ -18,6 +19,7 @@ class SafeListVisitSerializer(ModelSerializer):
             "updated",
             "visit_date",
             "atendees",
+            "requested_doctor"
         )
 
 class SafeCheckVisitSerializer(ModelSerializer):
@@ -30,6 +32,7 @@ class SafeCheckVisitSerializer(ModelSerializer):
 class UnsafeListVisitSerializer(ModelSerializer):
 
     atendees = ListUsersSerializer(many=True)
+    requested_doctor = ListUsersSerializer(many=False)
 
     class Meta:
         model = Visit
@@ -41,6 +44,7 @@ class UnsafeListVisitSerializer(ModelSerializer):
             "updated",
             "visit_date",
             "atendees",
+            "requested_doctor"
         )
 
 class StandardVisitSerializer(ModelSerializer):
@@ -55,6 +59,7 @@ class StandardVisitSerializer(ModelSerializer):
             "updated",
             "visit_date",
             "atendees",
+            "requested_doctor",
         )
 
     def create(self, validated_data: dict) -> Visit:

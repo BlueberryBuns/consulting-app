@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models.base import Model
 
 from .utils import create_hash
 
@@ -24,6 +25,7 @@ class Visit(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True, null=False, blank=False, editable=False)
     updated = models.DateTimeField(auto_now=True, blank=False, null=False)
     atendees = models.ManyToManyField(User)
+    requested_doctor = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=False, null=False, related_name="requested_doc")
     visit_date = models.DateTimeField(blank=False, null=False)
     
     def __str__(self):

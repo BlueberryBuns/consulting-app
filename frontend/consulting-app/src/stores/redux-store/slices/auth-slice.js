@@ -9,6 +9,7 @@ const initialAuthState = {
   isAdmin: false,
   firstName: null,
   lastName: null,
+  userId: localStorage.getItem("user_id"),
 };
 
 const accountSlice = createSlice({
@@ -20,6 +21,7 @@ const accountSlice = createSlice({
       console.log(action);
       localStorage.setItem("access_token", action.payload.access);
       localStorage.setItem("refresh_token", action.payload.refresh);
+      localStorage.setItem("user_id", action.payload.userId);
       switch (action.payload.role) {
         case 5:
           state.isAdmin = true;
@@ -42,6 +44,7 @@ const accountSlice = createSlice({
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
       state.isAuthenticated = true;
+      state.userId = action.payload.userId;
     },
     updateIsAuthenticated(state, action) {
       console.log("Auth updated");
@@ -75,8 +78,10 @@ const accountSlice = createSlice({
       state.isModerator = false;
       state.isDoctor = false;
       state.isAuthenticated = false;
+      state.userId = null;
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user_id");
     },
   },
 });
