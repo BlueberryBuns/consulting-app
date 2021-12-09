@@ -7,7 +7,7 @@ import { useStore } from "../../stores/custom-store/store";
 import initialCameraSetup from "../../media-utils/base-config";
 
 import CameraPlayer from "../../components/CameraPlayer/CameraPlayer";
-import { Button, Card, Grid, Paper } from "@mui/material";
+import { Button, Card, Grid, Hidden, Paper } from "@mui/material";
 import authAxios from "../../Auth/auth-axios";
 
 const CAMERA_CONFIG = { ...initialCameraSetup };
@@ -15,9 +15,12 @@ const CAMERA_CONFIG = { ...initialCameraSetup };
 const iceConfiguration = {
   iceServers: [
     {
-      urls: "turn:turn.med.blueberrybuns.com:3478",
+      url: "turn:turn.med.blueberrybuns.com:3478",
       username: "test",
       credential: "test123",
+    },
+    {
+      url: "stun:stun.l.google.com:19302",
     },
   ],
 };
@@ -190,14 +193,6 @@ const CallView = () => {
     }
   };
 
-  const waitForSomeTime = () => {
-    return new Promise((res) => {
-      setTimeout(() => {
-        res(true);
-      }, 2000);
-    });
-  };
-
   const disconnectUser = (peerConnections, e) => {
     const data = JSON.parse(e.data);
     const disconnectedUser = data.data["disconnected_user"].email;
@@ -225,7 +220,9 @@ const CallView = () => {
             candidate: event.candidate,
           })
         );
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     peerConnections[data.author].onicegatheringstatechange = (event) => {
@@ -235,7 +232,9 @@ const CallView = () => {
             peerConnections[data.author].iceGatheringState
           }`
         );
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     peerConnections[data.author].onconnectionstatechange = (event) => {
@@ -249,7 +248,9 @@ const CallView = () => {
           console.log("before removal");
           console.log(remoteMediaStream.getTracks());
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     peerConnections[data.author].onsignalingstatechange = (event) => {
@@ -259,7 +260,9 @@ const CallView = () => {
             peerConnections[data.author].signalingState
           }`
         );
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     peerConnections[data.author].oniceconnectionstatechange = (event) => {
@@ -280,7 +283,9 @@ const CallView = () => {
           console.log(remoteMediaStream.getTracks());
           delete peerConnections[data.author];
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     peerConnections[data.author].ontrack = async (event) => {
@@ -290,12 +295,15 @@ const CallView = () => {
         remoteMediaStream.addTrack(event.track, remoteMediaStream);
         console.log("MEDIASTREAM AFTER ADDING ALL TRACKS", remoteMediaStream);
         remoteRef.current.srcObject = remoteMediaStream;
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
   };
 
   const answerCall = async (peerConnections, webSocket, e) => {
     const data = JSON.parse(e.data);
+    console.log("CALL WAS MADE, WITH ", iceConfiguration);
     peerConnections[data.author] = new RTCPeerConnection(iceConfiguration);
     if (videoRef.current) {
       videoRef.current.srcObject.getTracks().forEach((track) => {
@@ -305,20 +313,26 @@ const CallView = () => {
         );
       });
     }
+    console.log(peerConnections[data.author]);
     addPeerConnectionListeners(peerConnections, webSocket, e);
     peerConnections[data.author].setRemoteDescription(
       new RTCSessionDescription(data.offer.offer)
     );
+    console.log(data.author);
     const answer = await peerConnections[data.author].createAnswer();
-    await peerConnections[data.author].setLocalDescription(answer);
-
-    webSocket.send(
-      JSON.stringify({
-        type: "answer.sdp",
-        toGroup: true,
-        answer: answer,
-      })
-    );
+    console.log("ANSWER:", answer);
+    try {
+      await peerConnections[data.author].setLocalDescription(answer);
+      webSocket.send(
+        JSON.stringify({
+          type: "answer.sdp",
+          toGroup: true,
+          answer: answer,
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const makeCall = async (peerConnections, webSocket, e) => {
@@ -336,14 +350,19 @@ const CallView = () => {
     }
     addPeerConnectionListeners(peerConnections, webSocket, e);
     const offer = await peerConnections[data.author].createOffer();
-    await peerConnections[data.author].setLocalDescription(offer);
-    webSocket.send(
-      JSON.stringify({
-        type: "offer.sdp",
-        toGroup: true,
-        offer: offer,
-      })
-    );
+    console.log(offer);
+    try {
+      await peerConnections[data.author].setLocalDescription(offer);
+      webSocket.send(
+        JSON.stringify({
+          type: "offer.sdp",
+          toGroup: true,
+          offer: offer,
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const answerSDP = async (peerConnections, e) => {
@@ -363,7 +382,7 @@ const CallView = () => {
 
   return (
     <>
-      <main>
+      {/* <main>
         <Grid container spacing={2}>
           <Grid py={1} item xs={6} md={8} m={4} p={4}>
             <RemotePlayer videoRef={remoteRef} />
@@ -372,26 +391,37 @@ const CallView = () => {
             <Grid py={1} item xs={6} md={4}>
               <LocalPlayer videoRef={videoRef} />
             </Grid>
-            <Grid py={1} item xs={6} md={4}>
-              <LocalPlayer videoRef={videoRef} />
-            </Grid>
           </Grid>
         </Grid>
-        <Button
-          onClick={async () => {
-            try {
-              const res = await authAxios.get(
-                "/api/patient/visits/2021-11-14/"
-              );
-              console.log(res);
-            } catch (err) {
-              console.log(err);
-            }
+      </main> */}
+      <Hidden smDown>
+        <Grid
+          container
+          spacing={0}
+          sx={{
+            display: "grid",
+            height: "calc(100vh - 64px)",
+            gridTemplateRows: "100%",
           }}
         >
-          Click me
-        </Button>
-      </main>
+          <RemotePlayer videoRef={remoteRef} />
+          <LocalPlayer videoRef={videoRef} />
+        </Grid>
+      </Hidden>
+      <Hidden smUp>
+        <Grid
+          container
+          spacing={0}
+          sx={{
+            display: "grid",
+            height: "calc(100vh - 64px)",
+            gridTemplateRows: "100%",
+          }}
+        >
+          <RemotePlayer videoRef={remoteRef} />
+          <LocalPlayer videoRef={videoRef} />
+        </Grid>
+      </Hidden>
     </>
   );
 };

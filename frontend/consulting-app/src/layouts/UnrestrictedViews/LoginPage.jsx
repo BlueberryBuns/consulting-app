@@ -139,6 +139,6 @@ export default function SignIn() {
       </Container>
     </ThemeProvider>
   ) : (
-    <Redirect to="/patient" />
+    <Redirect to="/" />
   );
 }

@@ -120,6 +120,18 @@ const NavBar = () => {
                   color="inherit"
                 ></ButtonLink>
               ))}
+              {authState.isDoctor ? (
+                doctorMenu.map((item) => (
+                  <ButtonLink
+                    to={item.url}
+                    text={item.name}
+                    style={{ fontWeight: 600 }}
+                    color="inherit"
+                  ></ButtonLink>
+                ))
+              ) : (
+                <></>
+              )}
               <ButtonLink
                 to={"/"}
                 text={"Wyloguj"}
@@ -155,23 +167,31 @@ const NavBar = () => {
           {patientMenu.map((item) => (
             <SliderButton to={item.url} text={item.name}></SliderButton>
           ))}
-          <Paper
-            elevation={0}
-            sx={{
-              borderBottom: "1px solid black",
-              borderRadius: "0 0 0 0 !important",
-              display: "grid",
-              placeItems: "center",
-              paddingTop: "30px",
-            }}
-          >
-            <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
-              Doctor
-            </Typography>
-          </Paper>
-          {doctorMenu.map((item) => (
-            <SliderButton to={item.url} text={item.name}></SliderButton>
-          ))}
+          {authState.isDoctor ? (
+            <>
+              <Paper
+                elevation={0}
+                sx={{
+                  borderBottom: "1px solid black",
+                  borderRadius: "0 0 0 0 !important",
+                  display: "grid",
+                  placeItems: "center",
+                  paddingTop: "30px",
+                }}
+              >
+                <Typography sx={{ paddingBottom: "3px", fontWeight: 600 }}>
+                  Doctor
+                </Typography>
+              </Paper>
+              <div>
+                {doctorMenu.map((item) => (
+                  <SliderButton to={item.url} text={item.name}></SliderButton>
+                ))}
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
           <Button
             sx={{ borderRadius: "0 0 0 0 !important" }}
             color="error"

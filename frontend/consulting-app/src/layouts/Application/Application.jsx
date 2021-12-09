@@ -1,6 +1,6 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 // import MeetingsView from "../RestrictedViews/Meetings";
-// import CallView from "../RestrictedViews/Call";
+import CallView from "../RestrictedViews/Call";
 // import Login from "../../layouts/Application/Account";
 // import Cam from "../../App";
 import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
@@ -15,7 +15,7 @@ import {
 import { Visits } from "../patient/Visits";
 import { SelectDoctorPatient } from "../patient/SelectDoctor";
 import { SelectDate } from "../patient/SelectDate";
-import { DoctorModule } from "./DoctorModule";
+import { DoctorVisits } from "./DoctorModule";
 import { PatientModule } from "./PatientModule";
 import UnauthorisedModule from "./UnauthorisedApp";
 import LoginPage from "../UnrestrictedViews/LoginPage";
@@ -93,7 +93,7 @@ const Application = () => {
             path="/doctors"
             render={(props) => <div>Doctors</div>} //<LandingPageTMP {...props} />}
           />
-
+          <Route path="/camera" render={(props) => <CallView {...props} />} />
           <Route path="/patient">
             {authState.isAuthenticated ? (
               <>
@@ -111,17 +111,18 @@ const Application = () => {
                 </Route>
               </>
             ) : (
-              <Redirect to="/login" />
+              <Redirect to="/camera" />
             )}
           </Route>
 
           {authState.isDoctor || authState.isAdmin ? (
             <Route path="/doctor/visits">
-              <div>Wizyty</div>
+              <DoctorVisits />
             </Route>
           ) : (
-            <Redirect to="/" />
+            <Redirect to="/camera" />
           )}
+
           {/* <Route
             exact
             path="/"

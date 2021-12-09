@@ -41,7 +41,8 @@ const LocalPlayer = (props) => {
       videoRef={props.videoRef}
       handleCanPlay={handleCanPlay}
       isMuted={true}
-      size={"300px"}
+      // size={"300px"}
+      style={{}}
       handleIsStopped={handleIsStopped}
     />
   );

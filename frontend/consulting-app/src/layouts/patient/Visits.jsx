@@ -23,6 +23,7 @@ let visits = { data: [] };
 export const Visits = (props) => {
   const [canceled, setCanceled] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [visitsUpdated, setVisitsUpdated] = useState(false);
   const authState = useSelector((state) => state.account);
   useEffect(() => {
     if (isLoaded) {
@@ -41,6 +42,14 @@ export const Visits = (props) => {
     getVisits();
   }, [isLoaded]);
 
+  useEffect(() => {
+    if (!visitsUpdated) {
+      return () => {};
+    }
+    setVisitsUpdated(false);
+    setIsLoaded(false);
+  }, [isLoaded, visitsUpdated]);
+
   const getDate = (dateString) => {
     let b = dateString.split(/\D/);
     console.log(b);
@@ -56,11 +65,18 @@ export const Visits = (props) => {
     return !!(new Date(+new Date() + 1000 * 60 * 60 * 3) >= visitDate);
   };
 
-  const jointVisit = (props) => {
+  const joinVisit = (props) => {
     console.log("join", props);
   };
 
-  const cancelVisit = (props) => {
+  const cancelVisit = async (props) => {
+    try {
+      let res = await authAxios.patch(`/api/patient/visits/${props}`, {
+        status: "CANCELED",
+      });
+    } catch (err) {}
+    setVisitsUpdated(true);
+
     console.log("cancel", props);
   };
 
@@ -81,7 +97,7 @@ export const Visits = (props) => {
             align="center"
             color="text.primary"
           >
-            Twoje spotkania
+            Nadchodzące spotkania
           </Typography>
 
           <Stack
@@ -109,14 +125,6 @@ export const Visits = (props) => {
                 <Hidden smDown>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {/* {visit.atendees[0].doctors_id
-                        ? visit.atendees[0].doctors_id.academic_title
-                        : ""}{" "}
-                      {visit.atendees[0].first_name}{" "}
-                      {visit.atendees[0].last_name} */}
-                      {/* {visit.requested_doctor.doctors_id.academic_title === authState.userId? }{" "}
-                      {visit.requested_doctor.first_name}{" "}
-                      {visit.requested_doctor.last_name} */}
                       {visit.requested_doctor.id === authState.userId
                         ? visit.atendees.map((a) =>
                             a.id === authState.userId
@@ -133,13 +141,17 @@ export const Visits = (props) => {
                         gridGap: "5px",
                       }}
                     >
-                      {visit.requested_doctor.doctors_id.specializations.map(
-                        (spec) => (
-                          <Paper elevation={3} sx={{ padding: "8px" }}>
-                            {spec.specialization}
-                          </Paper>
-                        )
-                      )}
+                      {visit.requested_doctor.id === authState.userId
+                        ? visit.atendees.map((a) =>
+                            a.id === authState.userId ? "" : ""
+                          )
+                        : visit.requested_doctor.doctors_id.specializations.map(
+                            (spec) => (
+                              <Paper elevation={3} sx={{ padding: "8px" }}>
+                                {spec.specialization}
+                              </Paper>
+                            )
+                          )}
                     </Grid>
                     <Grid
                       container
@@ -183,7 +195,10 @@ export const Visits = (props) => {
                           gridColumn: "2 / 3",
                         }}
                       >
-                        {visit.visit_date.split("T")[1].substring(0, 5)}
+                        {new Date(visit.visit_date).getHours()}:
+                        {new Date(visit.visit_date).getMinutes() === 0
+                          ? "00"
+                          : new Date(visit.visit_date).getMinutes()}
                       </Typography>
                       <Typography
                         sx={{
@@ -219,7 +234,7 @@ export const Visits = (props) => {
                     isAfterVisit(visit.visit_date) ? (
                       <Button
                         onClick={() => {
-                          jointVisit(visit);
+                          joinVisit(visit);
                         }}
                         disabled={true}
                         size="small"
@@ -229,20 +244,41 @@ export const Visits = (props) => {
                     ) : (
                       <Button
                         onClick={() => {
-                          jointVisit(visit);
+                          joinVisit(visit);
                         }}
                         size="small"
                       >
                         Dołącz
                       </Button>
                     )}
-                    <Button
-                      disabled={isAfterVisit(visit.visit_date)}
-                      size="small"
-                      color="error"
-                    >
-                      Cancel
-                    </Button>
+                    {isAfterVisit(visit.visit_date) ||
+                    visit.status === "CANCELED" ? (
+                      <Button
+                        disabled={true}
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        sx={{
+                          gridColumn: "2/3",
+                        }}
+                      >
+                        Odwołaj
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          cancelVisit(visit.id);
+                        }}
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        sx={{
+                          gridColumn: "2/3",
+                        }}
+                      >
+                        Odwołaj
+                      </Button>
+                    )}
                   </CardActions>
                 </Hidden>
                 <Hidden smUp>
@@ -257,11 +293,13 @@ export const Visits = (props) => {
                   />
                   <CardContent sx={{ gridColumn: "1/3" }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {visit.atendees[0].doctors_id
-                        ? visit.atendees[0].doctors_id.academic_title
-                        : ""}{" "}
-                      {visit.atendees[0].first_name}{" "}
-                      {visit.atendees[0].last_name}
+                      {visit.requested_doctor.id === authState.userId
+                        ? visit.atendees.map((a) =>
+                            a.id === authState.userId
+                              ? ""
+                              : `Pacjent ${a.first_name} ${a.last_name}`
+                          )
+                        : `${visit.requested_doctor.doctors_id.academic_title} ${visit.requested_doctor.first_name} ${visit.requested_doctor.last_name}`}
                     </Typography>
                     <Grid
                       container
@@ -271,17 +309,17 @@ export const Visits = (props) => {
                         gridGap: "5px",
                       }}
                     >
-                      {visit.atendees[0].doctors_id
-                        ? visit.atendees[0].doctors_id.specializations
-                          ? visit.atendees[0].doctors_id.specializations.map(
-                              (spec) => (
-                                <Paper elevation={3} sx={{ padding: "8px" }}>
-                                  {spec.specialization}
-                                </Paper>
-                              )
+                      {visit.requested_doctor.id === authState.userId
+                        ? visit.atendees.map((a) =>
+                            a.id === authState.userId ? "" : ""
+                          )
+                        : visit.requested_doctor.doctors_id.specializations.map(
+                            (spec) => (
+                              <Paper elevation={3} sx={{ padding: "8px" }}>
+                                {spec.specialization}
+                              </Paper>
                             )
-                          : "N"
-                        : ""}
+                          )}
                     </Grid>
 
                     <Grid
@@ -326,7 +364,10 @@ export const Visits = (props) => {
                           gridColumn: "2 / 3",
                         }}
                       >
-                        {visit.visit_date.split("T")[1].substring(0, 5)}
+                        {new Date(visit.visit_date).getHours()}:
+                        {new Date(visit.visit_date).getMinutes() === 0
+                          ? "00"
+                          : new Date(visit.visit_date).getMinutes()}
                       </Typography>
                       <Typography
                         sx={{
@@ -355,11 +396,11 @@ export const Visits = (props) => {
                       gridColumn: "1/3",
                     }}
                   >
-                    {visit.status != "CONFIRMED" ||
+                    {visit.status !== "CONFIRMED" ||
                     isAfterVisit(visit.visit_date) ? (
                       <Button
                         onClick={() => {
-                          jointVisit(visit);
+                          joinVisit(visit);
                         }}
                         disabled={true}
                         size="small"
@@ -373,7 +414,7 @@ export const Visits = (props) => {
                     ) : (
                       <Button
                         onClick={() => {
-                          jointVisit(visit);
+                          joinVisit(visit);
                         }}
                         size="small"
                         variant="outlined"
@@ -384,20 +425,34 @@ export const Visits = (props) => {
                         Dołącz
                       </Button>
                     )}
-                    <Button
-                      onClick={() => {
-                        cancelVisit(visit);
-                      }}
-                      disabled={isAfterVisit(visit.visit_date)}
-                      size="small"
-                      variant="outlined"
-                      color="error"
-                      sx={{
-                        gridColumn: "2/3",
-                      }}
-                    >
-                      Cancel
-                    </Button>
+                    {isAfterVisit(visit.visit_date) ||
+                    visit.status === "CANCELED" ? (
+                      <Button
+                        disabled={true}
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        sx={{
+                          gridColumn: "2/3",
+                        }}
+                      >
+                        Odwołaj
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          cancelVisit(visit.id);
+                        }}
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        sx={{
+                          gridColumn: "2/3",
+                        }}
+                      >
+                        Odwołaj
+                      </Button>
+                    )}
                   </CardActions>
                 </Hidden>
               </Card>

@@ -73,6 +73,7 @@ class ListVisitPatientDoctorAPIView(RetrieveModelMixin,
 
     @ParametrizedRetriveValidator(error_code=413, model=Visit)
     def get(self, request, *args, **kwargs):
+        self.queryset = self.queryset.order_by("-visit_date")
         return self.list(request, *args, **kwargs)
 
 class UpdateCreateVisitPatientAPIView(CreateModelMixin,
