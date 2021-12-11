@@ -186,7 +186,7 @@ export const SelectDoctorPatient = (props) => {
                       gridRow: "1/3",
                       gridColumn: "2/3",
                     }}
-                    image="https://source.unsplash.com/random"
+                    image="https://thispersondoesnotexist.com/"
                   />
                   <CardActions sx={{}}>
                     <Button
