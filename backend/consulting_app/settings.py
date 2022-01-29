@@ -13,7 +13,7 @@ import os
 import datetime
 from pathlib import Path
 
-CURRENT_DOMAIN = "http://localhost:3001"
+# CURRENT_DOMAIN = "http://localhost:3001"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -141,13 +141,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_HOST_USER="33uns.consulting@gmail.com"
-EMAIL_HOST_PASSWORD="aplikacja123"
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
